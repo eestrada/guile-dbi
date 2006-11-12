@@ -1,0 +1,427 @@
+<HTML>
+<HEAD>
+<!-- Created by texi2html 1.56k from guile-dbi.texi on 22 March 2005 -->
+
+<TITLE>Guile DBI manual</TITLE>
+</HEAD>
+<BODY>
+<H1>Guile DBI Manual</H1>
+<H2>For use with Guile DBI 1.0.2</H2>
+<ADDRESS>Maurizio Boriani </ADDRESS>
+<ADDRESS><A HREF="mailto:<A HREF="mailto:baux@member.fsf.org">baux@member.fsf.org</A>"><A HREF="mailto:baux@member.fsf.org">baux@member.fsf.org</A></A></ADDRESS>
+<P>
+<P><HR><P>
+
+
+<H1><A NAME="SEC1" HREF="guile-dbi_toc.html#TOC1">Introduction</A></H1>
+
+<P>
+guile-dbi is a database generic interface. Provide a way to use dbds (data 
+base drivers) which are linked at run-time (like perl dbi or php or...) 
+for query different database engines always in the same way.
+
+
+<P>
+This provide a very flexible way to use guile scheme implementation for db 
+works. 
+
+
+
+
+<H2><A NAME="SEC2" HREF="guile-dbi_toc.html#TOC2">History</A></H2>
+
+<P>
+I was looking around for a generic database lib for guile scheme 
+implementation and found some projects. But them, actually, wasn't
+really 'dynamic', simply compiled with different backend; I was
+looking for something which permit me to link database driver at 
+runtime (like dbi systems for perl or php, tcl and so on), but
+not found it. So I write it.
+
+
+
+
+<H2><A NAME="SEC3" HREF="guile-dbi_toc.html#TOC3">Getting Guile DBI</A></H2>
+
+<P>
+You can find the latest version of Guile DBI at its project page,
+<A HREF="http://www.gna.org/projects/guile-dbi/">http://www.gna.org/projects/guile-dbi/</A>.
+
+
+<P>
+In section files there are dbi and driver released tarball. For 
+development versions gnuarch must be used to retrieve sources,
+as in next example:
+
+
+
+<PRE>
+tla register-archive baux@member.fsf.org--2005-guile-dbi \
+http://arch.gna.org/guile-dbi/2005-guile-dbi
+
+tla get -A baux@member.fsf.org--2005-guile-dbi \
+guile-dbi--baux--1.0
+
+tla get -A baux@member.fsf.org--2005-guile-dbi \
+guile-dbd-mysql--baux--1.0
+</PRE>
+
+<P>
+You could also retrive stable versions via arch using "stable"
+breanch
+
+
+
+<PRE>
+tla register-archive baux@member.fsf.org--2005-guile-dbi \
+http://arch.gna.org/guile-dbi/2005-guile-dbi
+
+tla get -A baux@member.fsf.org--2005-guile-dbi \
+guile-dbi--stable--1.0
+
+tla get -A baux@member.fsf.org--2005-guile-dbi \
+guile-dbd-mysql--stable--1.0
+</PRE>
+
+
+
+<H1><A NAME="SEC4" HREF="guile-dbi_toc.html#TOC4">Tutorial</A></H1>
+
+<P>
+The Guile interface is simple.  
+There are only 5 functions: <CODE>dbi-open</CODE>,
+<CODE>dbi-close</CODE>, <CODE>dbi-query</CODE>, <CODE>dbi-get_status</CODE> 
+and <CODE>dbi-get_row</CODE>
+
+
+<P>
+Guile DBI supports any database for which a dbd is written,
+now mysql an postgres.
+
+
+<P>
+A test of usage with mysql server
+
+
+
+<PRE>
+#!/usr/bin/guile \
+-e main -s
+!#
+
+(use-modules (dbi dbi))
+
+(define ciccio (dbi-open "mysql" "user:pass:pluto:tcp:localhost:3306"))
+(define ret #f)
+;(define ciccio (dbi-open "mysql" "user:pass:pluto:socket:/tmp/mysql.sock"))
+
+(define main
+  (lambda (args)
+    (display "HERE")(newline)
+    (display ciccio)(newline)
+    (dbi-query ciccio "select * from pippo")
+    (display ciccio)(newline)
+    (set! ret (dbi-get_row ciccio))
+    (while (not (equal? ret #f))
+	   (display ret)(newline)
+	   (set! ret (dbi-get_row ciccio))
+	   )
+    (display ret)(newline)
+
+))
+</PRE>
+
+
+
+<H1><A NAME="SEC5" HREF="guile-dbi_toc.html#TOC5">Reference</A></H1>
+
+
+
+<H2><A NAME="SEC6" HREF="guile-dbi_toc.html#TOC6">Functions</A></H2>
+
+<P>
+<DL>
+<DT><U>Primitive:</U> <B>dbi-open</B> <I>backend connString</I>
+<DD><A NAME="IDX1"></A>
+
+
+<P>
+Attempt to load driver <VAR>backend</VAR>, and connect to database passing
+<VAR>connString</VAR> (which is connection string) to driver connect function.
+
+
+<P>
+If successful, it returns a <CODE>db-handle</CODE> object with which to 
+referenced the newly opened database connection. This object also 
+cointains operations status.
+
+
+<P>
+Every dbd implement and require its own connection string format which
+should be explained in its README file.
+
+
+<P>
+Example:
+
+<PRE>
+(dpi-open "mysql" "user:pass:database:tcp:localhost:3306")
+</PRE>
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Primitive:</U> <B>dbi-query</B> <I>db-handle query</I>
+<DD><A NAME="IDX2"></A>
+
+
+<P>
+Execute a query using <VAR>db-handle</VAR> and store status.
+
+
+<P>
+Example:
+
+<PRE>
+(dbi-query db "select * from table")
+</PRE>
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Primitive:</U> <B>dbi-get_status</B> <I>db-handle</I>
+<DD><A NAME="IDX3"></A>
+
+
+<P>
+Return a pair which car is status numeric code and cdr is
+status string message. <VAR>db-handle</VAR> should be a valid database
+handle object.
+
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Primitive:</U> <B>dbi-get_row</B> <I>db-handle</I>
+<DD><A NAME="IDX4"></A>
+
+
+<P>
+This function, called after dbi-query, returns <CODE>#f</CODE> if there isn't 
+a next row to retrive, otherwise a list. Returned list contains pair:
+car is field name and cdr is his value.
+
+
+<P>
+Example:
+
+<PRE>
+(dbi-get_row db)
+</PRE>
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Primitive:</U> <B>dbi-close</B> <I>db-handle</I>
+<DD><A NAME="IDX5"></A>
+
+
+<P>
+This function close <VAR>db-handle</VAR> and dereference loaded database
+driver. When diver's reference is 0 it is throw away from memory.
+
+
+<P>
+Example:
+
+<PRE>
+(dbi-close db-handle)
+</PRE>
+
+</DL>
+
+
+
+<H1><A NAME="SEC7" HREF="guile-dbi_toc.html#TOC7">Internals and Database Drivers</A></H1>
+
+
+
+<H2><A NAME="SEC8" HREF="guile-dbi_toc.html#TOC8">Internal structures</A></H2>
+
+<P>
+The main data structure used to store lib needed data is:
+
+
+
+<PRE>
+typedef struct g_db_handle
+{
+  SCM bcknd;
+  SCM constr;
+  SCM status;  
+  void* handle;
+  void* db_info;
+} gdbi_db_handle_t;
+</PRE>
+
+
+<UL>
+<LI><CODE>bcknd</CODE> store backend name (i.e. mysql or postgresql...).
+
+<LI><CODE>constr</CODE> string, store the backend connection string. This never be touched
+
+by guile-dbi lib but passed "as is" to databse plugin. In this manner, lib 
+interface, know nothing about backend working (nor username or pass or location...).
+<LI><CODE>status</CODE> this is a pair which is used to return information from backend to
+
+front end lib, car is return code number, cdr is return message.
+<LI><CODE>handle</CODE> is a void pointer used to point to dynamically loaded back-end lib,
+
+filled by dbi-open <CODE>__gdbi_dbd_wrap</CODE>
+<LI><CODE>db_info</CODE> is a void pointer to link data which could (and actually is)
+
+be different for different back-end. This and the <CODE>handle</CODE> are "NULL" at 
+connection close.
+</UL>
+
+
+
+<H2><A NAME="SEC9" HREF="guile-dbi_toc.html#TOC9">Internal functions</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>void</B> <I>__gdbi_dbd_wrap (gdbi_db_handle_t* dbh, char* function_name, void** function_pointer)</I>
+<DD><A NAME="IDX6"></A>
+</DL>
+
+
+<P>
+This function is used to search and return (in function pointer) the back-end 
+functions in order to shadow them from main dbi lib. It use handle (which point
+to back-end dynamically loaded library) for search a function named 
+"__bcknd_functio_name". In dbi interfaces functions (like open, close, 
+query...) function_name is filled by C "__FUNCTION__" macro. Status code
+and message are returned by status field in dbh.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>void</B> <I>init_db_handle_type(void)</I>
+<DD><A NAME="IDX7"></A>
+</DL>
+
+
+<P>
+Used to register static functions used to manage dbh SMOB.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>void</B> <I>init_dbi(void)</I>
+<DD><A NAME="IDX8"></A>
+</DL>
+
+
+<P>
+Used to expose guile-dbi symbols so, scheme can call them.
+
+
+
+
+<H2><A NAME="SEC10" HREF="guile-dbi_toc.html#TOC10">How plugins are loaded</A></H2>
+
+<P>
+All start from <CODE>s_make_db_handle</CODE>, this function using dlopen try to load
+a shared library named "libguile-dbd-bcknd.so". bcknd is the first param 
+of dbi-open. <BR>
+If all works well the dbh's field "hanlde" is filled with the
+pointer returned by "dlopen" and a good status is setted into dbh-&#62;status.
+Otherwise an erro code is settend in status car while crd is filled with 
+error message returned by <CODE>strerror</CODE>. <BR>
+Once "dlopen" is ok, <CODE>__gdbi_dbd_wrap</CODE> is used to call backend 
+plugin connect function passing it the connection string. If also this 
+step is ok, the db should be connected. 
+In every other dbi interface function, after types check, <CODE>__gdbi_dbd_wrap</CODE>
+is used to call dbd function. When close is called, after dbd close return, the 
+reference to linked dbd is decremented until is 0, so it's throw away from 
+memory.
+And that's all, for any other question see the source code :)
+
+
+
+
+<H2><A NAME="SEC11" HREF="guile-dbi_toc.html#TOC11">How to write plugins</A></H2>
+
+<P>
+Write a plugin is really simple (have a look at mysql or postgres dbd source 
+code...). You should supply few functions which being carefull to to names used.
+<BR>
+This are function and return type you should supply for a well written dbd:
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>void</B> <I>__bcknd_make_g_db_handle(gdbi_db_handle_t* dbh)</I>
+<DD><A NAME="IDX9"></A>
+</DL>
+
+
+<P>
+The "bcknd" is the name used by open function and should "remember"
+the dbd (obviously). This function should parse the connection string
+and use params to connect to backend dbd database. Status should be 
+setted in dbh in order to return useful informations. Don't forget
+to set dbh field "closed" to false if connection is correctly established.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>void</B> <I>__mysql_close_g_db_handle(gdbi_db_handle_t* dbh)</I>
+<DD><A NAME="IDX10"></A>
+</DL>
+
+
+<P>
+The exatly opposite of previus one, close connection and clean
+what's needed to be clean. Don't forget do set field "closed" to true if
+connection is correctly closed.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>void</B> <I>__mysql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)</I>
+<DD><A NAME="IDX11"></A>
+</DL>
+
+
+<P>
+This sould "load a query" set status but don't return any rows. This
+why the main design should be adaptable to different database so every
+function should be minimal as possible... for row return getrow must be
+implemented.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>SCM</B> <I>__mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)</I>
+<DD><A NAME="IDX12"></A>
+</DL>
+
+
+<P>
+This function should return a single row from a previusly executed query,
+so usually is colled more than once, when no more row are available a
+<CODE>#f</CODE> must be returned.<BR>
+A row returned must be a list of pairs where car is the field name and
+cdr is it's value (if possible value should maintain a specific type).
+
+
+<P><HR><P>
+This document was generated on 22 March 2005 using
+<A HREF="http://wwwinfo.cern.ch/dis/texi2html/">texi2html</A>&nbsp;1.56k.
+</BODY>
+</HTML>
