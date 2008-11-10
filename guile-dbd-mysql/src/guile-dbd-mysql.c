@@ -145,7 +145,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
 	  mysql_close(mysqlP->mysql);
 	  mysqlP->mysql = NULL;
 	  free(mysqlP);
-	  dbh->db_info=NULL;
+	  dbh->db_info = NULL;
 	  return;
 	}
       else
@@ -178,6 +178,7 @@ __mysql_close_g_db_handle(gdbi_db_handle_t* dbh)
   gdbi_mysql_ds_t* mysqlP = (gdbi_mysql_ds_t*)dbh->db_info;  
   if (mysqlP == NULL)
     {
+      if (dbh->in_free) return; /* don't scm anything if in GC */
       /* todo: error msg to be translated */
       dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("dbd info not found"));
@@ -185,9 +186,12 @@ __mysql_close_g_db_handle(gdbi_db_handle_t* dbh)
     }
   else if (mysqlP->mysql == NULL)
     {
-      /* todo: error msg to be translated */
-      dbh->status = scm_cons(SCM_MAKINUM(1),
-				   scm_makfrom0str("dbi connection already closed"));
+      if (0 == dbh->in_free)
+        {
+          /* todo: error msg to be translated */
+          dbh->status = scm_cons(SCM_MAKINUM(1),
+				       scm_makfrom0str("dbi connection already closed"));
+        }
       free(dbh->db_info);
       dbh->db_info = NULL;
       return;
@@ -205,6 +209,8 @@ __mysql_close_g_db_handle(gdbi_db_handle_t* dbh)
 
   /* todo: error msg to be translated */
   dbh->closed = SCM_BOOL_T;
+
+  if (dbh->in_free) return; /* don't scm anything if in GC */
   dbh->status = scm_cons(SCM_MAKINUM(0),
 			       scm_makfrom0str("dbi closed"));
   return;
