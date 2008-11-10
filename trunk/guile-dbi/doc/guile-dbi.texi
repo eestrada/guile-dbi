@@ -132,7 +132,7 @@ You can find the latest version of Guile DBI at its project page,
 @url{http://www.gna.org/projects/guile-dbi/}.
 
 @*
-In the file download area, there are dbi and driver released tarball. 
+In the file download area, there are dbi and driver tarballs. 
 
 @node Tutorial, Reference, Introduction, Top
 @chapter Tutorial
