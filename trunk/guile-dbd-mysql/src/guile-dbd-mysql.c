@@ -23,7 +23,6 @@
 
 #include <guile-dbi/guile-dbi.h>
 #include <libguile.h>
-#include <guile/gh.h>
 #include <mysql/mysql.h>
 #include <mysql/errmsg.h>
 #include <string.h>
@@ -60,7 +59,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
   if(scm_equal_p(scm_string_p(dbh->constr), SCM_BOOL_F) == SCM_BOOL_T)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("missing connection string"));
       return;
     }
@@ -75,11 +74,11 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
       int ret = 0;
       int port = 0;
       dbh->db_info = (MYSQL*) mysql_init(NULL);
-      char* user = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(0)),NULL);
-      char* pass = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(1)),NULL);
-      char* db   = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(2)),NULL);
-      char* ctyp = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(3)),NULL);
-      char* loc  = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(4)),NULL);
+      char* user = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(0)),NULL);
+      char* pass = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(1)),NULL);
+      char* db   = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(2)),NULL);
+      char* ctyp = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(3)),NULL);
+      char* loc  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(4)),NULL);
 
       mysqlP = (gdbi_mysql_ds_t*)malloc(sizeof(gdbi_mysql_ds_t));
       mysqlP->retn = 0;
@@ -96,14 +95,14 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
 
       if (strcmp(ctyp,"tcp") == 0)
 	{
-	  char* sport  = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(5)),
+	  char* sport  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(5)),
 				       NULL);
 	  port = atoi(sport);
 	  ret = (int) mysql_real_connect(mysqlP->mysql, loc, user, pass, db, 
 					 port, NULL, 0);
 	  if (items == 7)
 	    {
-	      char* sretn  = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(6)),
+	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(6)),
 					   NULL);
 	      mysqlP->retn = atoi(sretn);
 	    }
@@ -114,7 +113,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
 					 0);
 	  if (items == 6)
 	    {
-	      char* sretn  = gh_scm2newstr(scm_list_ref(cp_list,SCM_MAKINUM(5)),
+	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(5)),
 					   NULL);
 	      mysqlP->retn = atoi(sretn);
 	    }
@@ -144,7 +143,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
 
       if(ret == 0)
 	{
-	  dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+	  dbh->status = scm_cons(SCM_MAKINUM(1),
 				       scm_makfrom0str(mysql_error(mysqlP->mysql)));
 	  mysql_close(mysqlP->mysql);
 	  mysqlP->mysql = NULL;
@@ -155,7 +154,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
       else
 	{
 	  /* todo: error msg to be translated */
-	  dbh->status = (SCM) scm_cons(SCM_MAKINUM(0),
+	  dbh->status = scm_cons(SCM_MAKINUM(0),
 				       scm_makfrom0str("db connected"));
 	  dbh->db_info = mysqlP;
 	  dbh->closed = SCM_BOOL_F;
@@ -165,7 +164,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
   else
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("invalid connection string"));
       dbh->db_info = NULL;
       return;
@@ -183,14 +182,14 @@ __mysql_close_g_db_handle(gdbi_db_handle_t* dbh)
   if (mysqlP == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("dbd info not found"));
       return;
     }
   else if (mysqlP->mysql == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("dbi connection already closed"));
       free(dbh->db_info);
       dbh->db_info = NULL;
@@ -209,7 +208,7 @@ __mysql_close_g_db_handle(gdbi_db_handle_t* dbh)
 
   /* todo: error msg to be translated */
   dbh->closed = SCM_BOOL_T;
-  dbh->status = (SCM) scm_cons(SCM_MAKINUM(0),
+  dbh->status = scm_cons(SCM_MAKINUM(0),
 			       scm_makfrom0str("dbi closed"));
   return;
 
@@ -226,7 +225,7 @@ __mysql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
   if(dbh->db_info == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("invalid dbi connection"));
       return;
     }
@@ -248,7 +247,7 @@ __mysql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
 
   if (err)
     {
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str(mysql_error(mysqlP->mysql)));
       return;
     }
@@ -256,12 +255,12 @@ __mysql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
   mysqlP->res = mysql_use_result(mysqlP->mysql);
   if(mysqlP->res == NULL)
     {
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(0),
+      dbh->status = scm_cons(SCM_MAKINUM(0),
 				   scm_makfrom0str("query ok, no results"));
       return;
     }
 
-  dbh->status = (SCM) scm_cons(SCM_MAKINUM(0),
+  dbh->status = scm_cons(SCM_MAKINUM(0),
 			       scm_makfrom0str("query ok, got results"));
 
   return;
@@ -283,7 +282,7 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   if(dbh->db_info == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("invalid dbi connection"));
       return (SCM_BOOL_F);
     }
@@ -293,7 +292,7 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   if (!mysqlP->res)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+      dbh->status = scm_cons(SCM_MAKINUM(1),
 				   scm_makfrom0str("missing query result"));
       return (SCM_BOOL_F);
     }
@@ -301,7 +300,7 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   if ((row = mysql_fetch_row(mysqlP->res)) == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(SCM_MAKINUM(0),
+      dbh->status = scm_cons(SCM_MAKINUM(0),
 				   scm_makfrom0str("row end"));
       return (SCM_BOOL_F);
     }
@@ -325,10 +324,13 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	case FIELD_TYPE_LONG:
 	case FIELD_TYPE_LONGLONG:
 	case FIELD_TYPE_DECIMAL:
+	  value_str = strndup(row[f],les[f]);
+	  value = scm_from_long(atoi(value_str));
+	  break;
 	case FIELD_TYPE_FLOAT:
 	case FIELD_TYPE_DOUBLE: 
-	  value_str = (char*) strndup(row[f],les[f]);
-	  value = scm_int2num(atoi(value_str));
+	  value_str = strndup(row[f],les[f]);
+	  value = scm_from_long(atoi(value_str));
 	  break;
 	case FIELD_TYPE_STRING:
 	case FIELD_TYPE_ENUM:
@@ -340,12 +342,12 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	case FIELD_TYPE_DATETIME:
 	case FIELD_TYPE_TIMESTAMP:
 	case FIELD_TYPE_YEAR:
-	  value_str = (char*)strndup(row[f],les[f]);
+	  value_str = strndup(row[f],les[f]);
 	  value = (SCM)scm_makfrom0str(value_str);
 	  break;
 	default:
 	  /* todo: error msg to be translated */
-	  dbh->status = (SCM) scm_cons(SCM_MAKINUM(1),
+	  dbh->status = scm_cons(SCM_MAKINUM(1),
 				       scm_makfrom0str("unknown field type"));
 	  return SCM_EOL;
 	  break;
@@ -359,7 +361,7 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	}
     }
   /* todo: error msg to be translated */
-  dbh->status = (SCM) scm_cons(SCM_MAKINUM(0),
+  dbh->status = scm_cons(SCM_MAKINUM(0),
 			       scm_makfrom0str("row fetched"));
   return (retrow);
 }
