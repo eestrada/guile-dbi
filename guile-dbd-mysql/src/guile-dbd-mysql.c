@@ -330,7 +330,7 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	case FIELD_TYPE_FLOAT:
 	case FIELD_TYPE_DOUBLE: 
 	  value_str = strndup(row[f],les[f]);
-	  value = scm_from_long(atoi(value_str));
+	  value = scm_from_double(atof(value_str));
 	  break;
 	case FIELD_TYPE_STRING:
 	case FIELD_TYPE_ENUM:
@@ -343,7 +343,7 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	case FIELD_TYPE_TIMESTAMP:
 	case FIELD_TYPE_YEAR:
 	  value_str = strndup(row[f],les[f]);
-	  value = (SCM)scm_makfrom0str(value_str);
+	  value = scm_makfrom0str(value_str);
 	  break;
 	default:
 	  /* todo: error msg to be translated */
