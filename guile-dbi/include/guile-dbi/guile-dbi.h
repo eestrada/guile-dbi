@@ -17,17 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
- *
- * Process this file with autoconf to produce a configure script. */
+ */
 
 
 #ifndef __GUILE_DBI_H__
 #define __GUILE_DBI_H__
 
-
 #include <libguile.h>
-#include <guile/gh.h>
-
 
 /* guile smob struct */
 typedef struct g_db_handle
@@ -50,8 +46,8 @@ void init_dbi(void);
 
 
 
-/* dbd dynamyc wrapper stuff */
+/* dbd dynamic wrapper stuff */
 void __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
 		     void** function_pointer);
-/* end dbd dynamyc wrapper stuff */
+/* end dbd dynamic wrapper stuff */
 #endif
