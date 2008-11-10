@@ -1,0 +1,397 @@
+\input texinfo  @c -*-texinfo-*-
+
+@c Copyright (C) 2004, 2005 Free Software Foundation, Inc.
+
+@c %**start of header
+@setfilename guile-dbi.info
+@settitle Guile DBI manual
+
+@ifinfo
+@dircategory The Algorithmic Language Scheme
+@direntry
+* Guile DBI: (guile-dbi).       Guile database abstraction layer
+@end direntry
+
+Guile DBI Manual
+Copyright (C) 2004 Maurizio Boriani@*
+Copyright (C) 2005 Maurizio Boriani@*
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Free Software Foundation.
+
+@end ifinfo
+@c %**end of header
+
+@include version.texi
+
+@titlepage
+@title Guile DBI Manual
+@subtitle For use with Guile DBI @value{VERSION}
+
+@author Maurizio Boriani 
+@author @email{baux@@member.fsf.org}
+
+@c The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2004 Maurizio Boriani
+Copyright @copyright{} 2005 Maurizio Boriani
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by Free Software Foundation.
+
+@page
+@end titlepage
+@page
+
+@ifnottex
+@node Top, Introduction, (dir), (dir)
+@top Guile DBI Manual
+
+This reference manual documents Guile DBI, Guile Data Base Interface
+It describes how to use Guile DBI and how to write new dbd, database 
+drivers.
+
+This Info file contains edition 1.0 of the reference
+manual, corresponding to Guile DBI version @value{VERSION}.
+
+@end ifnottex
+
+@menu
+* Introduction::                
+* Tutorial::                    
+* Reference::                   
+* Internals and Database Drivers::         
+@end menu
+
+@node Introduction, Tutorial, Top, Top
+@chapter Introduction
+
+guile-dbi is a database generic interface. Provide a way to use dbds (data 
+base drivers) which are linked at run-time (like perl dbi or php or...) 
+for query different database engines always in the same way.
+
+This provide a very flexible way to use guile scheme implementation for db 
+works. 
+
+@section History
+
+I was looking around for a generic database lib for guile scheme 
+implementation and found some projects. But them, actually, wasn't
+really 'dynamic', simply compiled with different backend; I was
+looking for something which permit me to link database driver at 
+runtime (like dbi systems for perl or php, tcl and so on), but
+not found it. So I write it.
+
+@section Getting Guile DBI
+
+You can find the latest version of Guile DBI at its project page,
+@url{http://www.gna.org/projects/guile-dbi/}.
+
+In section files there are dbi and driver released tarball. For 
+development versions gnuarch must be used to retrieve sources,
+as in next example:
+
+@example
+tla register-archive baux@@member.fsf.org--2005-guile-dbi \
+http://arch.gna.org/guile-dbi/2005-guile-dbi
+
+tla get -A baux@@member.fsf.org--2005-guile-dbi \
+guile-dbi--baux--1.0
+
+tla get -A baux@@member.fsf.org--2005-guile-dbi \
+guile-dbd-mysql--baux--1.0
+@end example
+
+You could also retrive stable versions via arch using ``stable''
+breanch
+
+@example
+tla register-archive baux@@member.fsf.org--2005-guile-dbi \
+http://arch.gna.org/guile-dbi/2005-guile-dbi
+
+tla get -A baux@@member.fsf.org--2005-guile-dbi \
+guile-dbi--stable--1.0
+
+tla get -A baux@@member.fsf.org--2005-guile-dbi \
+guile-dbd-mysql--stable--1.0
+@end example
+
+
+@node Tutorial, Reference, Introduction, Top
+@chapter Tutorial
+
+The Guile interface is simple.  
+There are only 5 functions: @code{dbi-open},
+@code{dbi-close}, @code{dbi-query}, @code{dbi-get_status} 
+and @code{dbi-get_row}
+
+Guile DBI supports any database for which a dbd is written,
+now mysql an postgres.
+
+A test of usage with mysql server
+
+@example
+#!/usr/bin/guile \
+-e main -s
+!#
+
+(use-modules (dbi dbi))
+
+(define ciccio (dbi-open "mysql" "user:pass:pluto:tcp:localhost:3306"))
+(define ret #f)
+;(define ciccio (dbi-open "mysql" "user:pass:pluto:socket:/tmp/mysql.sock"))
+
+(define main
+  (lambda (args)
+    (display "HERE")(newline)
+    (display ciccio)(newline)
+    (dbi-query ciccio "select * from pippo")
+    (display ciccio)(newline)
+    (set! ret (dbi-get_row ciccio))
+    (while (not (equal? ret #f))
+	   (display ret)(newline)
+	   (set! ret (dbi-get_row ciccio))
+	   )
+    (display ret)(newline)
+
+))
+@end example
+
+
+@node Reference, Internals and Database Drivers, Tutorial, Top
+@chapter Reference
+
+@menu
+* Functions::                   
+@end menu
+
+@node Functions, , Reference, Reference
+@section Functions
+
+@deffn Primitive dbi-open backend connString
+
+Attempt to load driver @var{backend}, and connect to database passing
+@var{connString} (which is connection string) to driver connect function.
+
+If successful, it returns a @code{db-handle} object with which to 
+referenced the newly opened database connection. This object also 
+cointains operations status.
+
+Every dbd implement and require its own connection string format which
+should be explained in its README file.
+
+Example:
+@example
+(dpi-open "mysql" "user:pass:database:tcp:localhost:3306")
+@end example
+
+@end deffn
+
+
+@deffn Primitive dbi-query db-handle query
+
+Execute a query using @var{db-handle} and store status.
+
+Example:
+@example
+(dbi-query db "select * from table")
+@end example
+@end deffn
+
+
+@deffn Primitive dbi-get_status db-handle 
+
+Return a pair which car is status numeric code and cdr is
+status string message. @var{db-handle} should be a valid database
+handle object.
+
+@end deffn
+
+
+@deffn Primitive dbi-get_row db-handle
+
+This function, called after dbi-query, returns @code{#f} if there isn't 
+a next row to retrive, otherwise a list. Returned list contains pair:
+car is field name and cdr is his value.
+
+Example:
+@example
+(dbi-get_row db)
+@end example
+@end deffn
+
+
+@deffn Primitive dbi-close db-handle
+
+This function close @var{db-handle} and dereference loaded database
+driver. When diver's reference is 0 it is throw away from memory.
+
+Example:
+@example
+(dbi-close db-handle)
+@end example
+@end deffn
+
+
+@node Internals and Database Drivers, ,Reference, Top
+@chapter Internals and Database Drivers
+
+@menu
+* Internal structures::
+* Internal functions::
+* How plugins are loaded::
+* How to write plugins::
+@end menu
+
+@node Internal structures, Internal functions, Internals and Database Drivers, Internals and Database Drivers
+@section Internal structures
+
+The main data structure used to store lib needed data is:
+
+@example
+typedef struct g_db_handle
+@{
+  SCM bcknd;
+  SCM constr;
+  SCM status;  
+  void* handle;
+  void* db_info;
+@} gdbi_db_handle_t;
+@end example
+
+@itemize @bullet
+@item @code{bcknd} store backend name (i.e. mysql or postgresql...).
+@item @code{constr} string, store the backend connection string. This never be touched 
+by guile-dbi lib but passed ``as is'' to databse plugin. In this manner, lib 
+interface, know nothing about backend working (nor username or pass or location...).
+@item @code{status} this is a pair which is used to return information from backend to 
+front end lib, car is return code number, cdr is return message.
+@item @code{handle} is a void pointer used to point to dynamically loaded back-end lib,
+filled by dbi-open @code{__gdbi_dbd_wrap}
+@item @code{db_info} is a void pointer to link data which could (and actually is) 
+be different for different back-end. This and the @code{handle} are ``NULL'' at 
+connection close.
+@end itemize
+
+
+@node Internal functions, How plugins are loaded, Internal structures, Internals and Database Drivers
+@section Internal functions
+
+@defun void __gdbi_dbd_wrap (gdbi_db_handle_t* dbh, char* function_name, void** function_pointer)
+@end defun
+
+This function is used to search and return (in function pointer) the back-end 
+functions in order to shadow them from main dbi lib. It use handle (which point
+to back-end dynamically loaded library) for search a function named 
+``__bcknd_functio_name''. In dbi interfaces functions (like open, close, 
+query...) function_name is filled by C ``__FUNCTION__'' macro. Status code
+and message are returned by status field in dbh.
+
+@defun void init_db_handle_type(void)
+@end defun
+
+Used to register static functions used to manage dbh SMOB.
+
+@defun void init_dbi(void)
+@end defun 
+
+Used to expose guile-dbi symbols so, scheme can call them.
+
+@node How plugins are loaded, How to write plugins, Internal functions, Internals and Database Drivers
+@section How plugins are loaded
+
+All start from @code{s_make_db_handle}, this function using dlopen try to load
+a shared library named ``libguile-dbd-bcknd.so''. bcknd is the first param 
+of dbi-open. @*
+If all works well the dbh's field ``hanlde'' is filled with the
+pointer returned by ``dlopen'' and a good status is setted into dbh->status.
+Otherwise an erro code is settend in status car while crd is filled with 
+error message returned by @code{strerror}. @*
+Once ``dlopen'' is ok, @code{__gdbi_dbd_wrap} is used to call backend 
+plugin connect function passing it the connection string. If also this 
+step is ok, the db should be connected. 
+@sp 1
+In every other dbi interface function, after types check, @code{__gdbi_dbd_wrap}
+is used to call dbd function. When close is called, after dbd close return, the 
+reference to linked dbd is decremented until is 0, so it's throw away from 
+memory.
+@sp 1
+And that's all, for any other question see the source code :)
+
+@node How to write plugins, , How plugins are loaded, Internals and Database Drivers
+@section How to write plugins
+
+Write a plugin is really simple (have a look at mysql or postgres dbd source 
+code...). You should supply few functions which being carefull to to names used.
+@*
+This are function and return type you should supply for a well written dbd:
+@sp 1
+
+@defun void __bcknd_make_g_db_handle(gdbi_db_handle_t* dbh)
+@end defun
+
+The ``bcknd'' is the name used by open function and should ``remember''
+the dbd (obviously). This function should parse the connection string
+and use params to connect to backend dbd database. Status should be 
+setted in dbh in order to return useful informations. Don't forget
+to set dbh field ``closed'' to false if connection is correctly established.
+@sp 1
+
+@defun void __mysql_close_g_db_handle(gdbi_db_handle_t* dbh)
+@end defun
+
+The exatly opposite of previus one, close connection and clean
+what's needed to be clean. Don't forget do set field ``closed'' to true if
+connection is correctly closed.
+
+@defun void __mysql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
+@end defun
+
+This sould ``load a query'' set status but don't return any rows. This
+why the main design should be adaptable to different database so every
+function should be minimal as possible... for row return getrow must be
+implemented.
+@sp 1
+
+@defun SCM __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
+@end defun
+
+This function should return a single row from a previusly executed query,
+so usually is colled more than once, when no more row are available a
+@code{#f} must be returned.@*
+A row returned must be a list of pairs where car is the field name and
+cdr is it's value (if possible value should maintain a specific type).
+
+@contents
+@bye
