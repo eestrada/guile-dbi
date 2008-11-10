@@ -74,11 +74,11 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
       int ret = 0;
       int port = 0;
       dbh->db_info = (MYSQL*) mysql_init(NULL);
-      char* user = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(0)),NULL);
-      char* pass = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(1)),NULL);
-      char* db   = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(2)),NULL);
-      char* ctyp = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(3)),NULL);
-      char* loc  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(4)),NULL);
+      char* user = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(0)));
+      char* pass = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(1)));
+      char* db   = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(2)));
+      char* ctyp = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(3)));
+      char* loc  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(4)));
 
       mysqlP = (gdbi_mysql_ds_t*)malloc(sizeof(gdbi_mysql_ds_t));
       mysqlP->retn = 0;
@@ -95,15 +95,13 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
 
       if (strcmp(ctyp,"tcp") == 0)
 	{
-	  char* sport  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(5)),
-				       NULL);
+	  char* sport  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(5)));
 	  port = atoi(sport);
 	  ret = (int) mysql_real_connect(mysqlP->mysql, loc, user, pass, db, 
 					 port, NULL, 0);
 	  if (items == 7)
 	    {
-	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(6)),
-					   NULL);
+	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(6)));
 	      mysqlP->retn = atoi(sretn);
 	    }
 	}
@@ -113,8 +111,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
 					 0);
 	  if (items == 6)
 	    {
-	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(5)),
-					   NULL);
+	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,SCM_MAKINUM(5)));
 	      mysqlP->retn = atoi(sretn);
 	    }
 	}
