@@ -34,6 +34,7 @@ typedef struct g_db_handle
   SCM closed;  /* boolean, TRUE if closed otherwise FALSE */
   void* handle;
   void* db_info;
+  int in_free;
 } gdbi_db_handle_t;
 /* end guile smob struct */
 
