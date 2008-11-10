@@ -131,6 +131,7 @@ I now use it in one of my projects (the OpenCog NLP subsystem).>>
 You can find the latest version of Guile DBI at its project page,
 @url{http://www.gna.org/projects/guile-dbi/}.
 
+@*
 In the file download area, there are dbi and driver released tarball. 
 
 @node Tutorial, Reference, Introduction, Top
@@ -141,6 +142,7 @@ There are only 5 functions: @code{dbi-open},
 @code{dbi-close}, @code{dbi-query}, @code{dbi-get_status} 
 and @code{dbi-get_row}.
 
+@*
 Guile DBI supports any database for which a dbd backend is written.
 Currently, these are MySQL and Postgres.
 
