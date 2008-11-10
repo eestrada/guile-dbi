@@ -1,0 +1,61 @@
+2006-09-26  Maurizio Boriani  <baux@gnu.org>
+
+	* NEWS: Announce new release.
+	* DBD-VERSION: Bump up version.
+
+2005-03-22  Maurizio Boriani  <baux@gnu.org>
+
+	* NEWS: Announce new release.
+	* DBD-VERSION: Bump up version.
+	* README: Add connection string format explanation.
+
+2005-03-21  Maurizio Boriani  <baux@gnu.org>
+
+	* NEWS: Announce new release.
+	* DBD-VERSION: Bump up version.
+
+2005-03-04  Maurizio Boriani  <baux@gnu.org>
+
+	* NEWS: Announce new release.
+	* DBD-VERSION: Bump up version.
+
+2005-01-11  Maurizio Boriani  <baux@member.fsf.org>
+
+	* Init my 1.0 revision.
+
+2005-02-04  Maurizio Boriani  <baux@member.fsf.org>
+
+	* Makefile.am: Assign copyright to FSF.
+	* NEWS: Add info for 1.0.1 release.
+	* README: Add info.
+	* configure.ac: Assign copyright to FSF.
+	Check for mysqlclient lib.
+	* DBD-VERSION: Upgrade to release 1.0.1
+	* TODO: Update.
+
+2005-01-14  Maurizio Boriani  <baux@member.fsf.org>
+
+	* Makefile.am: Forgotten DBI-VERSION as extra dist file.
+	* DBI-VERSION: Incremente micro version var.
+
+2005-01-13  Maurizio Boriani  <baux@member.fsf.org>
+
+	* Makefile.am: Changed copyrigth assigner to myself.
+	* configure.ac: Likewise.
+	* DBD-VERSION: Upgraded micro field.
+
+2005-01-12  Maurizio Boriani  <baux@member.fsf.org>
+
+	* DBD-VERSION: lib and package versions vars.
+	* TODO: Thinks to do.
+	* configure.ac: Improved for versioning and so on
+
+2005-01-10  Maurizio Boriani  <baux@member.fsf.org>
+
+	* src: New dir for guile-dbi sources file.
+	* COPYING: New, gpl license.
+	* AUTHORS: New, authors list.
+	* NEWS: New, void.
+	* README: New, void.
+	* configure.ac: New. Main autoconf stuff.
+	* Makefile.am: New. Maim automake makefile.
