@@ -53,6 +53,8 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   g_db_handle->bcknd   = bcknd;
   g_db_handle->constr  = conn_string;
   g_db_handle->handle  = NULL;
+  g_db_handle->closed  = SCM_BOOL_T;
+  g_db_handle->in_free = 0;
   g_db_handle->db_info = NULL;
 
   bcknd_str = scm_to_locale_string (bcknd);
@@ -189,6 +191,9 @@ free_db_handle (SCM g_db_handle_smob)
   struct g_db_handle *g_db_handle = NULL;
 
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(g_db_handle_smob);
+  if (g_db_handle->in_free) return 0;
+  g_db_handle->in_free = 1;
+
   close_g_db_handle(g_db_handle_smob);
 
   if (g_db_handle != NULL)
@@ -325,7 +330,8 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
 		  20))) == NULL)
     {
       free(bcknd);
-      dbh->status = (SCM) scm_cons(scm_from_int(errno),
+      if (dbh->in_free) return; /* do not SCM anything while in GC */
+      dbh->status = scm_cons(scm_from_int(errno),
 				   scm_makfrom0str(strerror(errno)));
       return;
     }
@@ -335,6 +341,8 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
   if((ret = dlerror()) != NULL)
     {
       free(bcknd);
+      free(func);
+      if (dbh->in_free) return; /* do not SCM anything while in GC */
       dbh->status = (SCM) scm_cons(scm_from_int(1),
 				   scm_makfrom0str(ret));
       return;
@@ -345,8 +353,10 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
     {
       free(bcknd);
     }
+
+  if (dbh->in_free) return; /* do not SCM anything while in GC */
   /* todo: error msg to be translated */
-  dbh->status = (SCM) scm_cons(scm_from_int(0),
+  dbh->status = scm_cons(scm_from_int(0),
 			   scm_makfrom0str("symbol loaded"));
   return;
 }
