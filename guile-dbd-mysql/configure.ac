@@ -38,6 +38,13 @@ AC_PROG_LIBTOOL
 AC_CHECK_TOOL([AR], [ar], :)
 AC_CHECK_TOOL([NM], [nm], :)
 
+
+AC_CHECK_FUNCS([strerror])
+AC_CHECK_FUNCS([strndup])
+AC_CHECK_HEADERS([string.h]) 
+AC_FUNC_MALLOC
+AC_HEADER_STDC 
+
 # Checks for libs
 AC_CHECK_LIB(mysqlclient,mysql_init,,
         AC_MSG_ERROR([*** Can't find libmysql]))
