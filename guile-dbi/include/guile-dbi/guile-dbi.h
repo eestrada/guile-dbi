@@ -48,7 +48,7 @@ void init_dbi(void);
 
 
 /* dbd dynamic wrapper stuff */
-void __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
+void __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
 		     void** function_pointer);
 /* end dbd dynamic wrapper stuff */
 #endif

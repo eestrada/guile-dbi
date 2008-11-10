@@ -80,7 +80,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
 
-  __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &connect);  
+  __gdbi_dbd_wrap(g_db_handle, __FUNCTION__,(void**) &connect);
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
       free(bcknd_str);
@@ -166,7 +166,7 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
       return  SCM_UNSPECIFIED;
     }
 
-  __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbd_close);  
+  __gdbi_dbd_wrap(g_db_handle, __FUNCTION__,(void**) &dbd_close);
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
       scm_remember_upto_here_1(db_handle);
@@ -223,7 +223,7 @@ SCM_DEFINE (query_g_db_handle, "dbi-query", 2, 0, 0,
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
   query_str = scm_to_locale_string(query);
 
-  __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbi_query);  
+  __gdbi_dbd_wrap(g_db_handle, __FUNCTION__,(void**) &dbi_query);
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_T)
     {
       (*dbi_query)(g_db_handle,query_str);
@@ -249,7 +249,7 @@ SCM_DEFINE (getrow_g_db_handle, "dbi-get_row", 1, 0, 0,
   SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "getrow_g_db_handle");  
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
 
-  __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbi_getrow);  
+  __gdbi_dbd_wrap(g_db_handle, __FUNCTION__,(void**) &dbi_getrow);
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
       scm_remember_upto_here_1(db_handle);
@@ -317,7 +317,7 @@ init_dbi(void)
 
 /* dbd handler */
 void
-__gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
+__gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
 		void** function_pointer)
 {
   char *ret   = NULL;
@@ -337,13 +337,13 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
     }
 
   sprintf(func,"__%s_%s",bcknd,function_name);
-  *(void **) (function_pointer) = dlsym(dbh->handle,func);
+  *function_pointer = dlsym(dbh->handle,func);
   if((ret = dlerror()) != NULL)
     {
       free(bcknd);
       free(func);
       if (dbh->in_free) return; /* do not SCM anything while in GC */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_makfrom0str(ret));
       return;
     }
@@ -358,5 +358,4 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
   /* todo: error msg to be translated */
   dbh->status = scm_cons(scm_from_int(0),
 			   scm_makfrom0str("symbol loaded"));
-  return;
 }
