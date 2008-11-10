@@ -1,0 +1,42 @@
+Guile DBI NEWS --- history of user-visible changes.
+Copyright (C) 2005,2006 Free Software Foundation, Inc.
+See the end for copying conditions.
+
+Please send Guile bug reports to guile-dbi-devel@gna.org or 
+
+https://gna.org/bugs/?group=guile-dbi
+
+
+
+Changes in Guile DBI 2.0.0:
+
+* 2.0.0 remove deprecated guile 1.6 api to work with 1.8.
+
+
+Changes in Guile DBI 1.0.4:
+
+* 1.0.3 actually never release becouse another compiling broke bug
+  found. Fixed in this release.
+
+
+Changes in Guile DBI 1.0.3:
+
+* Fix include path search, this was braking compilation.
+
+
+Changes in Guile DBI 1.0.2:
+
+* Minor fix
+
+
+Changes in Guile DBI 1.0.1:
+
+* Implement test framework using greg.
+* Fix double close bug introducing a booleand field in db handler
+  struct.
+
+
+
+Changes in Guile DBI 1.0.1:
+
+* Assign copyright to FSF.
