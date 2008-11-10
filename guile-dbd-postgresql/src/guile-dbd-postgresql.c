@@ -23,7 +23,6 @@
 
 #include <guile-dbi/guile-dbi.h>
 #include <libguile.h>
-#include <guile/gh.h>
 #include <postgresql/libpq-fe.h>
 #include <string.h>
 #include <errno.h>
@@ -59,7 +58,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
   if(scm_equal_p(scm_string_p(dbh->constr), SCM_BOOL_F) == SCM_BOOL_T)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("missing connection string"));
       return;
     }
@@ -70,11 +69,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
   if (items >= 5 && items < 8)
     {
       char* port = NULL;
-      char* user = gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(0)),NULL);
-      char* pass = gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(1)),NULL);
-      char* db   = gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(2)),NULL);
-      char* ctyp = gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(3)),NULL);
-      char* loc  = gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(4)),NULL);
+      char* user, *pass, *db, *ctyp, *loc;
 
       pgsqlP = (gdbi_pgsql_ds_t*)malloc(sizeof(gdbi_pgsql_ds_t));
       pgsqlP->retn = 0;
@@ -86,18 +81,24 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
 	  return;
 	}
 
+      user = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(0)));
+      pass = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(1)));
+      db   = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(2)));
+      ctyp = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(3)));
+      loc  = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(4)));
+
       pgsqlP->pgsql = NULL;
       pgsqlP->res   = NULL;
 
       if (strcmp(ctyp,"tcp") == 0)
 	{
-	  port  = (char*) gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(5)),NULL);
+	  port  = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(5)));
 	  pgsqlP->pgsql = (PGconn*) PQsetdbLogin(loc,port,NULL,NULL,db,user,pass);
 	  if (items == 7)
 	    {
-	      char* sretn  = gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(6)),
-					   NULL);
+	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(6)));
 	      pgsqlP->retn = atoi(sretn);
+         free (sretn);
 	    }
 	}
       else
@@ -105,9 +106,9 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
 	  pgsqlP->pgsql = (PGconn*) PQsetdbLogin(loc,NULL,NULL,NULL,db,user,pass);
 	  if (items == 6)
 	    {
-	      char* sretn  = gh_scm2newstr(scm_list_ref(cp_list,scm_from_int(5)),
-					   NULL);
+	      char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(5)));
 	      pgsqlP->retn = atoi(sretn);
+         free (sretn);
 	    }
 	}
 
@@ -139,7 +140,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
 
       if(PQstatus(pgsqlP->pgsql) == CONNECTION_BAD)
 	{
-	  dbh->status = (SCM) scm_cons(scm_from_int(1),
+	  dbh->status = scm_cons(scm_from_int(1),
 				       scm_from_locale_string(PQerrorMessage(pgsqlP->pgsql)));
 	  PQfinish(pgsqlP->pgsql);
 	  pgsqlP->pgsql = NULL;
@@ -151,7 +152,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
       else
 	{
 	  /* todo: error msg to be translated */
-	  dbh->status = (SCM) scm_cons(scm_from_int(0),
+	  dbh->status = scm_cons(scm_from_int(0),
 				       scm_from_locale_string("db connected"));
 	  dbh->db_info = pgsqlP;
 	  dbh->closed = SCM_BOOL_F;
@@ -161,7 +162,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
   else
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("invalid connection string"));
       dbh->db_info = NULL;
       dbh->closed = SCM_BOOL_T;
@@ -181,14 +182,14 @@ __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh)
   if (pgsqlP == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("dbd info not found"));
       return;
     }
   else if (pgsqlP->pgsql == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("dbi connection already closed"));
       free(dbh->db_info);
       dbh->db_info = NULL;
@@ -208,7 +209,7 @@ __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh)
 
   /* todo: error msg to be translated */
   dbh->closed = SCM_BOOL_T;
-  dbh->status = (SCM) scm_cons(scm_from_int(0),
+  dbh->status = scm_cons(scm_from_int(0),
 			       scm_from_locale_string("dbi closed"));
   return;
 }
@@ -224,7 +225,7 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
   if(dbh->db_info == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("invalid dbi connection"));
       return;
     }
@@ -232,7 +233,7 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
   if (query == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("invalid dbi query"));
       return;
     }
@@ -257,14 +258,14 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
 
   if (err == 1)
     {
-      dbh->status = (SCM) scm_cons(scm_from_int(0),
+      dbh->status = scm_cons(scm_from_int(0),
 				   scm_from_locale_string("query ok"));
       pgsqlP->lget = 0;
       return;
     }
   else
     {
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string(PQerrorMessage(pgsqlP->pgsql)));
       return;
     }
@@ -285,7 +286,7 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   if(dbh->db_info == NULL)
     {
       /* todo: error msg to be translated */
-      dbh->status = (SCM) scm_cons(scm_from_int(1),
+      dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("invalid dbi connection"));
       return (SCM_BOOL_F);
     }
@@ -294,7 +295,7 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   if (pgsqlP->res == NULL && 
       (pgsqlP->res = PQgetResult(pgsqlP->pgsql)) == NULL)
     {
-      dbh->status = (SCM) scm_cons(scm_from_int(0),
+      dbh->status = scm_cons(scm_from_int(0),
 				   scm_from_locale_string("row end"));
       pgsqlP->lget = 0;
       return (SCM_BOOL_F);
@@ -314,14 +315,14 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	  type == 1700               ||
 	  type == 26                  )
 	{
-	  value_str = (char*) strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
+	  value_str = strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
 				      PQgetlength(pgsqlP->res,pgsqlP->lget,f));
 	  value = scm_from_long(atoi(value_str));
 	}
       else if (type == 700 ||
 	  type == 701            )
 	{
-	  value_str = (char*) strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
+	  value_str = strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
 				      PQgetlength(pgsqlP->res,pgsqlP->lget,f));
 	  value = scm_from_double(atof(value_str));
 	}
@@ -331,13 +332,13 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	       type == 702 ||
 	       (type >= 1042 && type <= 1114))
 	{
-	  value_str = (char*) strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
+	  value_str = strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
 				      PQgetlength(pgsqlP->res,pgsqlP->lget,f));
-	  value = (SCM)scm_from_locale_string(value_str);
+	  value = scm_from_locale_string(value_str);
 	}
       else
 	{
-	  dbh->status = (SCM) scm_cons(scm_from_int(1),
+	  dbh->status = scm_cons(scm_from_int(1),
 				       scm_from_locale_string("unknown field type"));
 	  pgsqlP->lget++;
 	  return SCM_EOL;
@@ -362,12 +363,12 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
     case PGRES_FATAL_ERROR:
       if (pgsqlP->res == NULL)
 	{
-	  dbh->status = (SCM) scm_cons(scm_from_int(0),
+	  dbh->status = scm_cons(scm_from_int(0),
 				       scm_from_locale_string("row end"));
 	}
       else
 	{
-	  dbh->status = (SCM) scm_cons(scm_from_int(1),
+	  dbh->status = scm_cons(scm_from_int(1),
 				       scm_from_locale_string(PQresStatus(PQresultStatus(pgsqlP->res))));
 	}
       break;
@@ -376,11 +377,11 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
     case PGRES_TUPLES_OK:
     case PGRES_COPY_OUT:
     case PGRES_COPY_IN:
-      dbh->status = (SCM) scm_cons(scm_from_int(0),
+      dbh->status = scm_cons(scm_from_int(0),
 				   scm_from_locale_string(PQresStatus(PQresultStatus(pgsqlP->res))));
       break;
     default:
-      dbh->status = (SCM) scm_cons(scm_from_int(0),
+      dbh->status = scm_cons(scm_from_int(0),
 				   scm_from_locale_string("unknown return query status"));
       break;
     }
