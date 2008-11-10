@@ -112,13 +112,19 @@ there are DBD backends for Postgres on MySQL.
 
 @section History
 
-Maurizio Boriani writes:
+In 2004, Maurizio Boriani wrote:
 <<I was looking around for a generic database library for guile scheme 
 implementation and found some projects. But them, actually, wasn't
 really 'dynamic', simply compiled with different backend; I was
 looking for something which permit me to link database driver at 
 runtime (like dbi systems for perl or php, tcl and so on), but
 not found it. So I write it.>>
+
+In 2008, Linas Vepstas wrote:
+<<I was looking for a generic SQL database interface for guile, and
+this was the only one that was documented, and held any promise of
+working. After a few bug fixes, it worked to my satisfaction, and 
+I now use it in one of my projects (the OpenCog NLP subsystem).>>
 
 @section Getting Guile DBI
 
@@ -130,15 +136,15 @@ In the file download area, there are dbi and driver released tarball.
 @node Tutorial, Reference, Introduction, Top
 @chapter Tutorial
 
-The Guile interface is simple.  
+The Scheme interface is very simple.  
 There are only 5 functions: @code{dbi-open},
 @code{dbi-close}, @code{dbi-query}, @code{dbi-get_status} 
-and @code{dbi-get_row}
+and @code{dbi-get_row}.
 
-Guile DBI supports any database for which a dbd is written,
-currently mysql and postgres.
+Guile DBI supports any database for which a dbd backend is written.
+Currently, these are MySQL and Postgres.
 
-A test of usage with mysql server
+Below follows an example usage with the MySQL database:
 
 @example
 #!/usr/bin/guile \
@@ -149,7 +155,7 @@ A test of usage with mysql server
 
 (define ciccio (dbi-open "mysql" "user:pass:pluto:tcp:localhost:3306"))
 (define ret #f)
-;(define ciccio (dbi-open "mysql" "user:pass:pluto:socket:/tmp/mysql.sock"))
+;; (define ciccio (dbi-open "mysql" "user:pass:pluto:socket:/tmp/mysql.sock"))
 
 (define main
   (lambda (args)
@@ -171,11 +177,6 @@ A test of usage with mysql server
 @node Reference, Internals and Database Drivers, Tutorial, Top
 @chapter Reference
 
-@menu
-* Functions::                   
-@end menu
-
-@node Functions, , Reference, Reference
 @section Functions
 
 @deffn Primitive dbi-open backend connString
@@ -320,12 +321,15 @@ Used to expose guile-dbi symbols so, scheme can call them.
 
 Everything starts at @code{s_make_db_handle}. This function uses dlopen 
 to load a shared library named ``libguile-dbd-bcknd.so''. bcknd is the 
-first param of dbi-open. @*
+first param of dbi-open. 
 
+@*
 If the shared library is successfully loaded, the dbh's field ``handle'' 
 is filled with the pointer returned by ``dlopen'' and dbh->status is 
 set.  Otherwise the status is set to an error code in the car location, 
-while cdr is filled with an error message returned by @code{strerror}. @*
+while cdr is filled with an error message returned by @code{strerror}. 
+
+@*
 Once ``dlopen'' is ok, @code{__gdbi_dbd_wrap} is used to call the backend 
 plugin connect function passing it the connection string. If this 
 step also succeeds, then the db should be connected. 
@@ -333,8 +337,6 @@ step also succeeds, then the db should be connected.
 In every other dbi interface function, after type check, @code{__gdbi_dbd_wrap}
 is used to call dbd function. When close is called, after dbd close return, the 
 reference to linked dbd is decremented until is 0.
-@sp 1
-That's all, for any other questions see the source code :)
 
 @node How to write plugins, , How plugins are loaded, Internals and Database Drivers
 @section How to write plugins
@@ -342,8 +344,9 @@ That's all, for any other questions see the source code :)
 Writing a plugin is fairly easy (have a look at mysql or postgres dbd source 
 code...). You will need to supply a few functions with appropriiately
 chosen names.
+
 @*
-These are tje functions and return types you should supply for 
+These are the functions and return types you should supply for 
 a well written dbd:
 @sp 1
 
@@ -376,10 +379,14 @@ any rows.  To return rows, the getrow function must be implemented.
 
 This function should return a single row from a previously executed
 query. It will typically be called more than once. When no more row
-are available a @code{#f} must be returned.@*
+are available a @code{#f} must be returned.
+
 A returned row must be an association list, that is, a list of pairs 
 whose car is the field name and cdr is it's value (if possible, the
 value should use the closest possible guile/scheme type).
 
+@sp 1
+@*
+That's all, for any other questions see the source code :)
 @contents
 @bye
