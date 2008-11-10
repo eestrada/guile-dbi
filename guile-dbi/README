@@ -1,34 +1,25 @@
-README - info file
-Copyright (C) 2005 Free Software Foundation, Inc.
-Written by Maurizio Boriani <baux@member.fsf.org>
 
-This file is part of the guile-dbi.
- 
-The guile-dbi is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
- 
-The guile-dbi is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
- 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
+                     README - info file
 
-Process this file with autoconf to produce a configure script.
+Copyright (C) 2005,2008 Free Software Foundation, Inc.
 
+Written by Maurizio Boriani <baux@member.fsf.org> 
+and Linas Vepstas <linasvepstas@gmail.org>
 
 * About
 
- guile-dbi is a database generic interface. Provide a way to use dbds
- (data base drivers) which are linked at run-time (like perl dbi or php
- or...)  for query different database engines always in the same way.
+ guile-dbi provides a simple, generic, easy-to-use scheme/guile interface
+ to SQL databases, such as Postgres or MySQL.
 
- Please send bug reports to https://gna.org/bugs/?group=guile-dbi or
- guile-dbi-devel@gna.org
+ The system is split into two parts: the DBI (database independent) part,
+ which provides the scheme interfaces, and the DBD (database dependent)
+ plugins, which connect to the actual SQL server. Currently, there are
+ DBD backends for Postgres on MySQL.
+
+ Please send patches and bug reports to guile-user@gnu.org, and be sure
+ to copy Linas Vepstas <linasvepstas@gmail.com>. Alternately, they may
+ be posted at bug reports to https://gna.org/bugs/?group=guile-dbi, in
+ which case the mailing list should be notified anyway.
 
 * Guile DBI dependencies
 
@@ -48,7 +39,6 @@ Process this file with autoconf to produce a configure script.
  http://home.gna.org/guile-dbi/
 
  The project page is at: http://www.gna.org/projects/guile-dbi.
-
 
 * Guile DBI License
 
