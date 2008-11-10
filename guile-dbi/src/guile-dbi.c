@@ -214,7 +214,7 @@ SCM_DEFINE (query_g_db_handle, "dbi-query", 2, 0, 0,
   SCM_ASSERT (scm_is_string (query), query, SCM_ARG2, "query_g_db_handle");
 
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
-  query_str = (char*) gh_scm2newstr(query,NULL);
+  query_str = scm_to_locale_string(query);
 
   __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbi_query);  
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
@@ -315,11 +315,12 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
   char *func  = NULL;
   char *bcknd = NULL;
 
-  bcknd = (char*) gh_scm2newstr(dbh->bcknd,NULL);
+  bcknd = scm_to_locale_string(dbh->bcknd);
 
   if((func=malloc(sizeof(char)*(strlen(function_name)+
 		  20))) == NULL)
     {
+      free(bcknd);
       dbh->status = (SCM) scm_cons(scm_from_int(errno),
 				   scm_makfrom0str(strerror(errno)));
       return;
@@ -329,6 +330,7 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, char* function_name,
   *(void **) (function_pointer) = dlsym(dbh->handle,func);
   if((ret = dlerror()) != NULL)
     {
+      free(bcknd);
       dbh->status = (SCM) scm_cons(scm_from_int(1),
 				   scm_makfrom0str(ret));
       return;
