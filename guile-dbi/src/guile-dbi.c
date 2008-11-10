@@ -55,12 +55,13 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   g_db_handle->handle  = NULL;
   g_db_handle->db_info = NULL;
 
-  bcknd_str = (char*) gh_scm2newstr(bcknd,NULL);
+  bcknd_str = scm_to_locale_string (bcknd);
 
   sodbd=(char*) malloc (sizeof(char)*(strlen("libguile-dbd-") +
 				      strlen(bcknd_str) + 10));
   if (sodbd == NULL)
     {
+      free(bcknd_str);
       g_db_handle->status = scm_cons(scm_from_int(errno),
 				     scm_makfrom0str(strerror(errno)));
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
@@ -70,6 +71,8 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   g_db_handle->handle = dlopen(sodbd,RTLD_NOW);
   if ( g_db_handle->handle == NULL)
     {
+      free(bcknd_str);
+      free(sodbd);
       g_db_handle->status =  scm_cons(scm_from_int(1),
 			      scm_makfrom0str(dlerror()));      
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
@@ -78,6 +81,8 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &connect);  
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
+      free(bcknd_str);
+      free(sodbd);
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
   
