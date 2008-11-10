@@ -299,7 +299,7 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
       pgsqlP->lget = 0;
       return (SCM_BOOL_F);
     }
-  else if (pgsqlP->lget == (PQntuples(pgsqlP->res) - 1))
+  else if (pgsqlP->lget == PQntuples(pgsqlP->res))
     {
       pgsqlP->res = PQgetResult(pgsqlP->pgsql);
     }
