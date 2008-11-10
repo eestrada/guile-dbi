@@ -1,0 +1,45 @@
+2006-09-26  Maurizio Boriani  <baux@gnu.org>
+
+	* DBD-VERSION: Upgrade to release 2.0.0.
+	* NEWS: Announce new release.
+
+2005-03-24  Maurizio Boriani  <baux@gnu.org>
+
+	* DBD-VERSION: Upgrade to release 1.0.3.
+	* NEWS: Announce new release.
+	* README: Add connection string format description.
+
+2005-03-21  Maurizio Boriani  <baux@gnu.org>
+
+	* DBD-VERSION: Upgrade to release 1.0.2.
+	* NEWS: Announce new release.
+
+2005-02-11  Maurizio Boriani  <baux@member.fsf.org>
+
+	* Init my 1.0 revision.
+
+2005-02-04  Maurizio Boriani  <baux@member.fsf.org>
+
+	* Makefile.am: Assign copyroght to FSF.
+	* configure.ac: Assign copyroght to FSF.
+	Add lib check.
+	* DBD-VERSION: Upgrade to release 1.0.1.
+	* README: Add info.
+	* NEWS: Add info.
+
+2005-01-17  Maurizio Boriani  <baux@member.fsf.org>
+
+	* DBD-VERSION: micro ver upgraded to 5.
+
+2005-01-15  Maurizio Boriani  <baux@member.fsf.org>
+
+	* src: New dir for guile-dbd sources file.
+	* COPYING: New, gpl license.
+	* AUTHORS: New, authors list.
+	* NEWS: New, void.
+	* README: New, void.
+	* configure.ac: New. Main autoconf stuff.
+	* Makefile.am: New. Maim automake makefile.
+	* TODO: New, todo list.
+	* DBD-VERSION: New, versioning vars.
+	
