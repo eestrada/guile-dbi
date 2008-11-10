@@ -29,11 +29,6 @@
 
 
 static scm_t_bits g_db_handle_tag;
-static SCM mark_db_handle (SCM g_db_handle_smob);
-static size_t free_db_handle (SCM g_db_handle_smob);
-static int print_db_handle (SCM g_db_handle_smob, SCM port,
-			    scm_print_state* pstate);
-
 
 #define DBI_SMOB_P(obj) ((SCM_NIMP(obj)) && (SCM_TYP16(obj)==g_db_handle_tag))
 
@@ -154,7 +149,7 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
 #define FUNC_NAME s_close_db_handle
 {
   struct g_db_handle *g_db_handle = NULL;
-  void (*dbi_close)(gdbi_db_handle_t*);
+  void (*dbd_close)(gdbi_db_handle_t*);
 
   SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "close_g_db_handle");
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
@@ -164,12 +159,12 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
       return  SCM_UNSPECIFIED;
     }
 
-  __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbi_close);  
+  __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbd_close);  
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
       return  SCM_UNSPECIFIED;
     }
-  (*dbi_close)(g_db_handle);
+  (*dbd_close)(g_db_handle);
   if (g_db_handle->handle)
     {
       dlclose(g_db_handle->handle);
@@ -185,7 +180,6 @@ static size_t
 free_db_handle (SCM g_db_handle_smob)
 {
   struct g_db_handle *g_db_handle = NULL;
-  size_t size = sizeof(struct g_db_handle);
 
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(g_db_handle_smob);
   close_g_db_handle(g_db_handle_smob);
@@ -196,7 +190,7 @@ free_db_handle (SCM g_db_handle_smob)
     }
 
   SCM_SETCDR (g_db_handle_smob, (SCM)NULL);
-  return (size);
+  return 0;
 }
 
 
