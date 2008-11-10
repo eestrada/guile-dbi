@@ -316,7 +316,7 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	{
 	  value_str = (char*) strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
 				      PQgetlength(pgsqlP->res,pgsqlP->lget,f));
-	  value = scm_int2num(atoi(value_str));
+	  value = scm_from_long(atoi(value_str));
 	}
       else if (type == 700 ||
 	  type == 701            )
