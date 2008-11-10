@@ -1,6 +1,7 @@
 /* guile-dbd-postgresql.c - Main source file
- * Copyright (C) 2004, 2005, 2006 Free Software Foundation, Inc.
+ * Copyright (C) 2004, 2005, 2006,2008 Free Software Foundation, Inc.
  * Written by Maurizio Boriani <baux@member.fsf.org>
+ * Maintained by Linas Vepstas <linasvepstas@gmail.com>
  *
  * This file is part of the guile-dbd-postgresql.
  * 
