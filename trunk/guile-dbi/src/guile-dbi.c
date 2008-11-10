@@ -295,6 +295,9 @@ init_db_handle_type(void)
 void 
 init_dbi(void)
 {
+  static int is_inited = 0;
+  if (is_inited) return;
+  is_inited = 1;
   init_db_handle_type();
 
 #ifndef SCM_MAGIC_SNARFER
