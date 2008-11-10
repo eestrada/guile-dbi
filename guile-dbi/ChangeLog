@@ -1,3 +1,9 @@
+
+2008-09-15 Linas Vepstas <linasvepstas@gmail.com>
+
+	* Numerous bug fixes for crashes, hangs, memory leaks.
+	* Bump version to release 2.1.0
+
 2006-09-26  Maurizio Boriani  <baux@gnu.org>
 
 	* DBI-VERIONS: Bump to release 2.0.0.
