@@ -311,14 +311,19 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
       SCM value;
       int type = PQftype(pgsqlP->res,f);
       if ((type >= 20 && type <= 24) ||
-	  type == 700                ||
-	  type == 701                ||
 	  type == 1700               ||
 	  type == 26                  )
 	{
 	  value_str = (char*) strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
 				      PQgetlength(pgsqlP->res,pgsqlP->lget,f));
 	  value = scm_int2num(atoi(value_str));
+	}
+      else if (type == 700 ||
+	  type == 701            )
+	{
+	  value_str = (char*) strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
+				      PQgetlength(pgsqlP->res,pgsqlP->lget,f));
+	  value = scm_from_double(atof(value_str));
 	}
       else if (type == 18 ||
 	       type == 19 ||
