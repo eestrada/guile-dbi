@@ -159,7 +159,7 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
   SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "close_g_db_handle");
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
 
-  if (scm_equal_p (g_db_handle->closed, SCM_BOOL_T) == SCM_BOOL_T)
+  if (g_db_handle->closed == SCM_BOOL_T)
     {
       return  SCM_UNSPECIFIED;
     }
@@ -167,6 +167,7 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
   __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbd_close);  
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
+      scm_remember_upto_here_1(db_handle);
       return  SCM_UNSPECIFIED;
     }
   (*dbd_close)(g_db_handle);
@@ -175,6 +176,7 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
       dlclose(g_db_handle->handle);
       g_db_handle->handle = NULL;
     }
+  scm_remember_upto_here_1(db_handle);
   return  SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -217,13 +219,13 @@ SCM_DEFINE (query_g_db_handle, "dbi-query", 2, 0, 0,
   query_str = scm_to_locale_string(query);
 
   __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbi_query);  
-  if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
+  if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_T)
     {
-      return(SCM_UNSPECIFIED);
+      (*dbi_query)(g_db_handle,query_str);
     }
-  
-  (*dbi_query)(g_db_handle,query_str);
 
+  free(query_str);
+  scm_remember_upto_here_1(db_handle);
   return (SCM_UNSPECIFIED);  
 }
 #undef FUNC_NAME
@@ -240,17 +242,18 @@ SCM_DEFINE (getrow_g_db_handle, "dbi-get_row", 1, 0, 0,
   SCM (*dbi_getrow)(gdbi_db_handle_t*);
 
   SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "getrow_g_db_handle");  
-
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
 
   __gdbi_dbd_wrap(g_db_handle,(char*) __FUNCTION__,(void**) &dbi_getrow);  
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
+      scm_remember_upto_here_1(db_handle);
       return(retrow);
     }
   
   retrow = (*dbi_getrow)(g_db_handle);
 
+  scm_remember_upto_here_1(db_handle);
   return(retrow);  
 }
 #undef FUNC_NAME
@@ -270,6 +273,7 @@ SCM_DEFINE (getstat_g_db_handle, "dbi-get_status", 1, 0, 0,
 
   if (g_db_handle != NULL)
     {
+      scm_remember_upto_here_1(db_handle);
       return (g_db_handle->status);
     }
 
