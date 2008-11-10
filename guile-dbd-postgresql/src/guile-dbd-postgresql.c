@@ -181,6 +181,7 @@ __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh)
   gdbi_pgsql_ds_t* pgsqlP = (gdbi_pgsql_ds_t*)dbh->db_info;  
   if (pgsqlP == NULL)
     {
+      if (dbh->in_free) return; /* don't scm anything if in GC */
       /* todo: error msg to be translated */
       dbh->status = scm_cons(scm_from_int(1),
 				   scm_from_locale_string("dbd info not found"));
@@ -188,9 +189,12 @@ __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh)
     }
   else if (pgsqlP->pgsql == NULL)
     {
-      /* todo: error msg to be translated */
-      dbh->status = scm_cons(scm_from_int(1),
-				   scm_from_locale_string("dbi connection already closed"));
+      if (0 == dbh->in_free)
+        {
+          /* todo: error msg to be translated */
+          dbh->status = scm_cons(scm_from_int(1),
+			    	   scm_from_locale_string("dbi connection already closed"));
+        }
       free(dbh->db_info);
       dbh->db_info = NULL;
       dbh->closed = SCM_BOOL_T;
@@ -207,8 +211,10 @@ __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh)
   free(dbh->db_info);
   dbh->db_info = NULL;
 
-  /* todo: error msg to be translated */
   dbh->closed = SCM_BOOL_T;
+
+  if (dbh->in_free) return; /* don't scm anything if in GC */
+  /* todo: error msg to be translated */
   dbh->status = scm_cons(scm_from_int(0),
 			       scm_from_locale_string("dbi closed"));
   return;
