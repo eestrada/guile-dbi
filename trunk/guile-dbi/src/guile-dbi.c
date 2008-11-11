@@ -37,15 +37,15 @@ static scm_t_bits g_db_handle_tag;
 SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
 	    (SCM bcknd, SCM conn_string),
 	    "Build db_handle smob.")
-#define FUNC_NAME s_make_db_handle
+#define FUNC_NAME s_make_g_db_handle
 {
   struct g_db_handle *g_db_handle = NULL;
   char* sodbd                     = NULL;
   char* bcknd_str                 = NULL;
   void (*connect)(gdbi_db_handle_t*);
 
-  SCM_ASSERT (scm_is_string (bcknd), bcknd, SCM_ARG1, "make_g_db_handle");
-  SCM_ASSERT (scm_is_string (conn_string), bcknd, SCM_ARG2, "make_g_db_handle");
+  SCM_ASSERT (scm_is_string (bcknd), bcknd, SCM_ARG1, FUNC_NAME);
+  SCM_ASSERT (scm_is_string (conn_string), conn_string, SCM_ARG2, FUNC_NAME);
 
   g_db_handle = (struct g_db_handle*)scm_gc_malloc(sizeof (struct g_db_handle),
 						   "g_db_handle");
@@ -153,12 +153,12 @@ print_db_handle (SCM g_db_handle_smob, SCM port,
 SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
 	    (SCM db_handle),
 	    "Close db connection.")
-#define FUNC_NAME s_close_db_handle
+#define FUNC_NAME s_close_g_db_handle
 {
   struct g_db_handle *g_db_handle = NULL;
   void (*dbd_close)(gdbi_db_handle_t*);
 
-  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "close_g_db_handle");
+  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, FUNC_NAME);
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
 
   if (g_db_handle->closed == SCM_BOOL_T)
@@ -210,15 +210,15 @@ free_db_handle (SCM g_db_handle_smob)
 SCM_DEFINE (query_g_db_handle, "dbi-query", 2, 0, 0,
 	    (SCM db_handle, SCM query),
 	    "Do a query and set status.")
-#define FUNC_NAME s_query_db_handle
+#define FUNC_NAME s_query_g_db_handle
 {
   struct g_db_handle *g_db_handle = NULL;
   char               *query_str   = NULL;
 
   void (*dbi_query)(gdbi_db_handle_t*,char*);
 
-  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "query_g_db_handle");  
-  SCM_ASSERT (scm_is_string (query), query, SCM_ARG2, "query_g_db_handle");
+  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, FUNC_NAME);  
+  SCM_ASSERT (scm_is_string (query), query, SCM_ARG2, FUNC_NAME);
 
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
   query_str = scm_to_locale_string(query);
@@ -240,13 +240,13 @@ SCM_DEFINE (query_g_db_handle, "dbi-query", 2, 0, 0,
 SCM_DEFINE (getrow_g_db_handle, "dbi-get_row", 1, 0, 0,
 	    (SCM db_handle),
 	    "Do a query and return a row in form of pair list or false")
-#define FUNC_NAME s_getrow_db_handle
+#define FUNC_NAME s_getrow_g_db_handle
 {
   struct g_db_handle *g_db_handle = NULL;
   SCM retrow = SCM_EOL;
   SCM (*dbi_getrow)(gdbi_db_handle_t*);
 
-  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "getrow_g_db_handle");  
+  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, FUNC_NAME);  
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
 
   __gdbi_dbd_wrap(g_db_handle, __FUNCTION__,(void**) &dbi_getrow);
@@ -268,11 +268,11 @@ SCM_DEFINE (getrow_g_db_handle, "dbi-get_row", 1, 0, 0,
 SCM_DEFINE (getstat_g_db_handle, "dbi-get_status", 1, 0, 0,
 	    (SCM db_handle),
 	    "Return status pair, code and msg, from dbi smob.")
-#define FUNC_NAME s_getstat_db_handle
+#define FUNC_NAME s_getstat_g_db_handle
 {
   struct g_db_handle *g_db_handle = NULL;
 
-  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, "getstat_g_db_handle");  
+  SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, FUNC_NAME);  
 
   g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(db_handle);
 
