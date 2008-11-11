@@ -1,8 +1,10 @@
+Version 2.1.2:
+	* Patch from Mike gran, fixes function names in assert.
 
 2008-09-15 Linas Vepstas <linasvepstas@gmail.com>
 
 	* Numerous bug fixes for crashes, hangs, memory leaks.
-	* Bump version to release 2.1.0
+	* Bump version to release 2.1.1
 
 2006-09-26  Maurizio Boriani  <baux@gnu.org>
 
