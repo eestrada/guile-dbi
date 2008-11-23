@@ -66,7 +66,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
 
   cp_list = scm_string_split(dbh->constr,SCM_MAKE_CHAR(sep));
 
-  items=SCM_INUM(scm_length(cp_list));
+  items = scm_to_int(scm_length(cp_list));
   if (items >= 5 && items < 8)
     {
       char* port = NULL;
