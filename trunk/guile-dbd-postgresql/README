@@ -73,6 +73,18 @@ and Linas Vepstas <linasvepstas@gmail.org>
    gpg: Signature made Tue Feb 26 19:41:07 2008 CST using RSA key ID C0389241
    gpg: Good signature from "Linas Vepstas (current active email; others are inactive) <linasvepstas@gmail.com>"
 
+Maintainer hints:
+
+	To build a clean, fresh tool envirnoment:
+
+		libtoolize
+		aclocal
+		autoscan
+		autoheader
+		automake
+		autoconf
+		./configure
+
 * Guile DBI License
 
  This program is free software; you can redistribute it and/or modify
