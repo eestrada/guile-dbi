@@ -1,4 +1,7 @@
 
+2008-11-23 Linas Vepstas <linasvepstas@gmail.com>
+	* Remove deprecated SCM_INUM functions.
+
 2008-11-10 Linas Vepstas <linasvepstas@gmail.com>
    * DBD-VERSION 2.1.1
 	* Fix mis-conversion of float, double values.
