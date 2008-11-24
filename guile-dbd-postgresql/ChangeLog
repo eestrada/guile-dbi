@@ -2,6 +2,7 @@
 	* Remove deprecated SCM_INUM
 	* Fix massive memory leak.
 	* Avoid some pointless/un-needed malloc/free usage.
+	* Check result status *before* trying to access data!
 
 2008-09-15  Linas Vepstas <linasvepstas@gmail.com>
 

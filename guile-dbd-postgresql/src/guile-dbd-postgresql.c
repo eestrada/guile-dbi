@@ -298,13 +298,47 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
       dbh->status = scm_cons(scm_from_int(0),
                                    scm_from_locale_string("row end"));
       pgsqlP->lget = 0;
-      return (SCM_BOOL_F);
+      return SCM_BOOL_F;
     }
 
   if (pgsqlP->lget == PQntuples(pgsqlP->res))
     {
+      pgsqlP->lget = 0;
       PQclear(pgsqlP->res);
       pgsqlP->res = PQgetResult(pgsqlP->pgsql);
+    }
+
+  /* Check result status before unpacking the data! */
+  switch (PQresultStatus(pgsqlP->res))
+    {
+    case PGRES_BAD_RESPONSE:
+    case PGRES_NONFATAL_ERROR:
+    case PGRES_FATAL_ERROR:
+      if (pgsqlP->res == NULL)
+        {
+          dbh->status = scm_cons(scm_from_int(0),
+                                scm_from_locale_string("row end"));
+        }
+      else
+        {
+          dbh->status = scm_cons(scm_from_int(1),
+               scm_from_locale_string(PQresStatus(PQresultStatus(pgsqlP->res))));
+        }
+      return SCM_BOOL_F;
+
+    case PGRES_EMPTY_QUERY:
+    case PGRES_COMMAND_OK:
+    case PGRES_TUPLES_OK:
+    case PGRES_COPY_OUT:
+    case PGRES_COPY_IN:
+      dbh->status = scm_cons(scm_from_int(0),
+            scm_from_locale_string(PQresStatus(PQresultStatus(pgsqlP->res))));
+      break;
+
+    default:
+      dbh->status = scm_cons(scm_from_int(0),
+            scm_from_locale_string("unknown return query status"));
+      break;
     }
 
   fnum = PQnfields(pgsqlP->res);
@@ -349,42 +383,6 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 
   pgsqlP->lget++;
 
-  switch (PQresultStatus(pgsqlP->res))
-    {
-    case PGRES_BAD_RESPONSE:
-    case PGRES_NONFATAL_ERROR:
-    case PGRES_FATAL_ERROR:
-      if (pgsqlP->res == NULL)
-        {
-          dbh->status = scm_cons(scm_from_int(0),
-                                scm_from_locale_string("row end"));
-        }
-      else
-        {
-          dbh->status = scm_cons(scm_from_int(1),
-               scm_from_locale_string(PQresStatus(PQresultStatus(pgsqlP->res))));
-        }
-      break;
-    case PGRES_EMPTY_QUERY:
-    case PGRES_COMMAND_OK:
-    case PGRES_TUPLES_OK:
-    case PGRES_COPY_OUT:
-    case PGRES_COPY_IN:
-      dbh->status = scm_cons(scm_from_int(0),
-            scm_from_locale_string(PQresStatus(PQresultStatus(pgsqlP->res))));
-      break;
-    default:
-      dbh->status = scm_cons(scm_from_int(0),
-            scm_from_locale_string("unknown return query status"));
-      break;
-    }
-
-  if (retrow == SCM_EOL)
-    {
-      return (SCM_BOOL_F);
-    }
-  else
-    {
-      return (retrow);
-    }
+  if (retrow == SCM_EOL) retrow = SCM_BOOL_F;
+  return retrow;
 }
