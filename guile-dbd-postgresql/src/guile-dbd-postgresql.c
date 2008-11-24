@@ -37,7 +37,7 @@ void __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query);
 SCM __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh);
 
 
-typedef struct gdbi_pgsql_ds
+typedef struct 
 {
   PGconn*   pgsql;
   PGresult* res;
@@ -55,8 +55,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
   gdbi_pgsql_ds_t* pgsqlP = NULL;
   SCM cp_list = SCM_EOL;
 
-
-  if(scm_equal_p(scm_string_p(dbh->constr), SCM_BOOL_F) == SCM_BOOL_T)
+  if (scm_equal_p(scm_string_p(dbh->constr), SCM_BOOL_F) == SCM_BOOL_T)
     {
       /* todo: error msg to be translated */
       dbh->status = scm_cons(scm_from_int(1),
@@ -72,7 +71,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
       char* port = NULL;
       char* user, *pass, *db, *ctyp, *loc;
 
-      pgsqlP = (gdbi_pgsql_ds_t*)malloc(sizeof(gdbi_pgsql_ds_t));
+      pgsqlP = (gdbi_pgsql_ds_t*) malloc(sizeof(gdbi_pgsql_ds_t));
       pgsqlP->retn = 0;
 
       if (pgsqlP == NULL)
@@ -109,7 +108,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
             {
               char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(5)));
               pgsqlP->retn = atoi(sretn);
-         free (sretn);
+              free (sretn);
             }
         }
 
@@ -139,7 +138,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
           free(port);
         }
 
-      if(PQstatus(pgsqlP->pgsql) == CONNECTION_BAD)
+      if (PQstatus(pgsqlP->pgsql) == CONNECTION_BAD)
         {
           dbh->status = scm_cons(scm_from_int(1),
                      scm_from_locale_string(PQerrorMessage(pgsqlP->pgsql)));
@@ -171,7 +170,6 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
     }
 
   return;
-
 }
 
 
@@ -229,7 +227,7 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
   gdbi_pgsql_ds_t* pgsqlP = NULL;
   int err, i, bpid;
 
-  if(dbh->db_info == NULL)
+  if (dbh->db_info == NULL)
     {
       /* todo: error msg to be translated */
       dbh->status = scm_cons(scm_from_int(1),
@@ -351,7 +349,7 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
           return SCM_EOL;
         }
 
-      retrow = scm_append (scm_list_2(retrow,
+      retrow = scm_append(scm_list_2(retrow,
           scm_list_1(scm_cons(scm_from_locale_string(PQfname(pgsqlP->res,f)),
                                               value))));
       if (value_str != NULL)
