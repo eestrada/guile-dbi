@@ -39,7 +39,7 @@ void __mysql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query);
 SCM __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh);
 
 
-typedef struct gdbi_mysql_ds
+typedef struct
 {
   MYSQL* mysql;
   MYSQL_RES* res;
@@ -81,7 +81,7 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
       char* ctyp = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(3)));
       char* loc  = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(4)));
 
-      mysqlP = (gdbi_mysql_ds_t*)malloc(sizeof(gdbi_mysql_ds_t));
+      mysqlP = (gdbi_mysql_ds_t*) malloc(sizeof(gdbi_mysql_ds_t));
       mysqlP->retn = 0;
 
       if (mysqlP == NULL)
