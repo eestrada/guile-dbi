@@ -3,6 +3,7 @@
 	* Fix massive memory leak.
 	* Avoid some pointless/un-needed malloc/free usage.
 	* Check result status *before* trying to access data!
+	* DBD-VERSION: Upgrade to release 2.1.2.
 
 2008-09-15  Linas Vepstas <linasvepstas@gmail.com>
 
