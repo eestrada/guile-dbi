@@ -59,7 +59,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
 
   bcknd_str = scm_to_locale_string (bcknd);
 
-  sodbd=(char*) malloc (sizeof(char)*(strlen("libguile-dbd-") +
+  sodbd = (char*) malloc (sizeof(char)*(strlen("libguile-dbd-") +
 				      strlen(bcknd_str) + 10));
   if (sodbd == NULL)
     {
@@ -71,7 +71,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   sprintf(sodbd,"libguile-dbd-%s.so",bcknd_str);
 
   g_db_handle->handle = dlopen(sodbd,RTLD_NOW);
-  if ( g_db_handle->handle == NULL)
+  if (g_db_handle->handle == NULL)
     {
       free(bcknd_str);
       free(sodbd);
@@ -326,8 +326,8 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
 
   bcknd = scm_to_locale_string(dbh->bcknd);
 
-  if((func=malloc(sizeof(char)*(strlen(function_name)+
-		  20))) == NULL)
+  func = malloc(sizeof(char) * (strlen(function_name) + 20));
+  if (NULL == func)
     {
       free(bcknd);
       if (dbh->in_free) return; /* do not SCM anything while in GC */
@@ -336,9 +336,9 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
       return;
     }
 
-  sprintf(func,"__%s_%s",bcknd,function_name);
+  sprintf(func,"__%s_%s", bcknd, function_name);
   *function_pointer = dlsym(dbh->handle,func);
-  if((ret = dlerror()) != NULL)
+  if ((ret = dlerror()) != NULL)
     {
       free(bcknd);
       free(func);
