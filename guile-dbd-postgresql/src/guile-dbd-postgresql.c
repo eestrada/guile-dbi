@@ -310,23 +310,20 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   fnum = PQnfields(pgsqlP->res);
   for (f = 0; f<fnum; f++)
     {
-      char* value_str = NULL;
       SCM value;
-      int type = PQftype(pgsqlP->res,f);
+      int type = PQftype(pgsqlP->res, f);
       if ((type >= 20 && type <= 24) ||
           type == 1700               ||
           type == 26                  )
         {
-          value_str = strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
-                              PQgetlength(pgsqlP->res,pgsqlP->lget,f));
-          value = scm_from_long(atoi(value_str));
+          const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget,f);
+          value = scm_from_long(atoi(vstr));
         }
       else if (type == 700 ||
           type == 701            )
         {
-          value_str = strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
-                             PQgetlength(pgsqlP->res,pgsqlP->lget,f));
-          value = scm_from_double(atof(value_str));
+          const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
+          value = scm_from_double(atof(vstr));
         }
       else if (type == 18 ||
                type == 19 ||
@@ -334,9 +331,8 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
                type == 702 ||
                (type >= 1042 && type <= 1114))
         {
-          value_str = strndup(PQgetvalue(pgsqlP->res,pgsqlP->lget,f),
-                            PQgetlength(pgsqlP->res,pgsqlP->lget,f));
-          value = scm_from_locale_string(value_str);
+          const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
+          value = scm_from_locale_string(vstr);
         }
       else
         {
@@ -349,11 +345,6 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
       retrow = scm_append(scm_list_2(retrow,
           scm_list_1(scm_cons(scm_from_locale_string(PQfname(pgsqlP->res,f)),
                                               value))));
-      if (value_str != NULL)
-        {
-          free(value_str);
-        }
-
     }
 
   pgsqlP->lget++;
