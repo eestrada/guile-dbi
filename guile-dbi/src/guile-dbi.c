@@ -41,7 +41,6 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
 {
   struct g_db_handle *g_db_handle = NULL;
   char* sodbd                     = NULL;
-  char* bcknd_str                 = NULL;
   void (*connect)(gdbi_db_handle_t*);
 
   SCM_ASSERT (scm_is_string (bcknd), bcknd, SCM_ARG1, FUNC_NAME);
@@ -56,14 +55,13 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   g_db_handle->closed  = SCM_BOOL_T;
   g_db_handle->in_free = 0;
   g_db_handle->db_info = NULL;
-
-  bcknd_str = scm_to_locale_string (bcknd);
+  g_db_handle->bcknd_str = scm_to_locale_string (bcknd);
+  g_db_handle->bcknd_strlen = strlen(g_db_handle->bcknd_str);
 
   sodbd = (char*) malloc (sizeof(char)*(strlen("libguile-dbd-") +
-				      strlen(bcknd_str) + 10));
+				      g_db_handle->bcknd_strlen + 10));
   if (sodbd == NULL)
     {
-      free(bcknd_str);
       g_db_handle->status = scm_cons(scm_from_int(errno),
 				     scm_makfrom0str(strerror(errno)));
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
@@ -73,7 +71,6 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   g_db_handle->handle = dlopen(sodbd,RTLD_NOW);
   if (g_db_handle->handle == NULL)
     {
-      free(bcknd_str);
       free(sodbd);
       g_db_handle->status =  scm_cons(scm_from_int(1),
 			      scm_makfrom0str(dlerror()));      
@@ -83,17 +80,11 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   __gdbi_dbd_wrap(g_db_handle, __FUNCTION__,(void**) &connect);
   if (scm_equal_p (SCM_CAR(g_db_handle->status),scm_from_int(0)) == SCM_BOOL_F)
     {
-      free(bcknd_str);
       free(sodbd);
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
   
   (*connect)(g_db_handle);
-
-  if (bcknd_str != NULL)
-    {
-      free(bcknd_str);
-    }
 
   if (sodbd != NULL)
     {
@@ -188,9 +179,9 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
 static size_t 
 free_db_handle (SCM g_db_handle_smob)
 {
-  struct g_db_handle *g_db_handle = NULL;
+  gdbi_db_handle_t *g_db_handle = NULL;
 
-  g_db_handle = (struct g_db_handle*)SCM_SMOB_DATA(g_db_handle_smob);
+  g_db_handle = (gdbi_db_handle_t *) SCM_SMOB_DATA(g_db_handle_smob);
   if (g_db_handle->in_free) return 0;
   g_db_handle->in_free = 1;
 
@@ -198,6 +189,7 @@ free_db_handle (SCM g_db_handle_smob)
 
   if (g_db_handle != NULL)
     {
+      free(g_db_handle->bcknd_str);
       scm_gc_free(g_db_handle,sizeof (struct g_db_handle),"g_db_handle");
     }
 
@@ -322,25 +314,21 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
 {
   char *ret   = NULL;
   char *func  = NULL;
-  char *bcknd = NULL;
 
-  bcknd = scm_to_locale_string(dbh->bcknd);
-
-  func = malloc(sizeof(char) * (strlen(function_name) + 20));
+  func = malloc(sizeof(char) * (strlen(function_name) + 
+      dbh->bcknd_strlen + 10));
   if (NULL == func)
     {
-      free(bcknd);
       if (dbh->in_free) return; /* do not SCM anything while in GC */
       dbh->status = scm_cons(scm_from_int(errno),
 				   scm_makfrom0str(strerror(errno)));
       return;
     }
 
-  sprintf(func,"__%s_%s", bcknd, function_name);
-  *function_pointer = dlsym(dbh->handle,func);
+  sprintf(func, "__%s_%s", dbh->bcknd_str, function_name);
+  *function_pointer = dlsym(dbh->handle, func);
   if ((ret = dlerror()) != NULL)
     {
-      free(bcknd);
       free(func);
       if (dbh->in_free) return; /* do not SCM anything while in GC */
       dbh->status = scm_cons(scm_from_int(1),
@@ -349,10 +337,6 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
     }
 
   free(func);
-  if (bcknd != NULL)
-    {
-      free(bcknd);
-    }
 
   if (dbh->in_free) return; /* do not SCM anything while in GC */
   /* todo: error msg to be translated */
