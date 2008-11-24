@@ -40,7 +40,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
 #define FUNC_NAME s_make_g_db_handle
 {
   char* sodbd = NULL;
-  gdbi_db_handle_t *g_db_handle;
+  gdbi_db_handle_t *g_db_handle = NULL;
   void (*connect)(gdbi_db_handle_t*);
 
   SCM_ASSERT (scm_is_string(bcknd), bcknd, SCM_ARG1, FUNC_NAME);
@@ -146,7 +146,7 @@ SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
 	    "Close db connection.")
 #define FUNC_NAME s_close_g_db_handle
 {
-  gdbi_db_handle_t *g_db_handle;
+  gdbi_db_handle_t *g_db_handle = NULL;
   void (*dbd_close)(gdbi_db_handle_t *);
 
   SCM_ASSERT(DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, FUNC_NAME);
@@ -262,7 +262,7 @@ SCM_DEFINE (getstat_g_db_handle, "dbi-get_status", 1, 0, 0,
 	    "Return status pair, code and msg, from dbi smob.")
 #define FUNC_NAME s_getstat_g_db_handle
 {
-  gdbi_db_handle_t *g_db_handle;
+  gdbi_db_handle_t *g_db_handle = NULL;
 
   SCM_ASSERT (DBI_SMOB_P(db_handle), db_handle, SCM_ARG1, FUNC_NAME);  
 
