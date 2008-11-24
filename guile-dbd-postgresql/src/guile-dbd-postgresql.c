@@ -29,15 +29,14 @@
 #include <errno.h>
 #include <stdio.h>
 
-
-/* functions prototypes and structures */
+/* Function prototypes and structures */
 void __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh);
 void __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh);
 void __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query);
 SCM __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh);
 
 
-typedef struct 
+typedef struct
 {
   PGconn*   pgsql;
   PGresult* res;
@@ -186,18 +185,21 @@ __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh)
                  scm_from_locale_string("dbd info not found"));
       return;
     }
-  else if (pgsqlP->pgsql == NULL)
+
+  /* Don't scm anything if we are in garbage collection */
+  if (0 == dbh->in_free)
     {
-      if (0 == dbh->in_free)
+      if (NULL == pgsqlP->pgsql)
         {
           /* todo: error msg to be translated */
           dbh->status = scm_cons(scm_from_int(1),
                  scm_from_locale_string("dbi connection already closed"));
         }
-      free(dbh->db_info);
-      dbh->db_info = NULL;
-      dbh->closed = SCM_BOOL_T;
-      return;
+      else
+        {
+          dbh->status = scm_cons(scm_from_int(0),
+                      scm_from_locale_string("dbi closed"));
+        }
     }
 
   PQfinish(pgsqlP->pgsql);
@@ -211,12 +213,6 @@ __postgresql_close_g_db_handle(gdbi_db_handle_t* dbh)
   dbh->db_info = NULL;
 
   dbh->closed = SCM_BOOL_T;
-
-  if (dbh->in_free) return; /* don't scm anything if in GC */
-  /* todo: error msg to be translated */
-  dbh->status = scm_cons(scm_from_int(0),
-                        scm_from_locale_string("dbi closed"));
-  return;
 }
 
 
