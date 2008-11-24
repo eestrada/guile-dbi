@@ -26,9 +26,11 @@
 #include <libguile.h>
 
 /* guile smob struct */
-typedef struct g_db_handle
+typedef struct 
 {
   SCM bcknd;
+  const char * bcknd_str;
+  size_t bcknd_strlen;
   SCM constr;
   SCM status;  /* pair: car = error numeric code, cdr = status message */
   SCM closed;  /* boolean, TRUE if closed otherwise FALSE */
