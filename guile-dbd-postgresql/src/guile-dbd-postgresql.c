@@ -247,6 +247,7 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
       pgsqlP->res = NULL;
     }
 
+#if 0
   if (PQresultStatus(pgsqlP->res) == PGRES_FATAL_ERROR)
     {
       for (i = 0, bpid=0; i < pgsqlP->retn && bpid == 0; i++)
@@ -255,24 +256,20 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
           bpid = PQbackendPID(pgsqlP->pgsql);
         }
     }
-  err = PQsendQuery(pgsqlP->pgsql,query);
+#endif
+  err = PQsendQuery(pgsqlP->pgsql, query);
 
   if (err == 1)
     {
       dbh->status = scm_cons(scm_from_int(0),
                     scm_from_locale_string("query ok"));
       pgsqlP->lget = 0;
-      return;
     }
   else
     {
       dbh->status = scm_cons(scm_from_int(1),
               scm_from_locale_string(PQerrorMessage(pgsqlP->pgsql)));
-      return;
     }
-
-  return;
-
 }
 
 
@@ -284,7 +281,7 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   SCM retrow = SCM_EOL;
   int fnum,f ;
 
-  if(dbh->db_info == NULL)
+  if (dbh->db_info == NULL)
     {
       /* todo: error msg to be translated */
       dbh->status = scm_cons(scm_from_int(1),
@@ -293,15 +290,18 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
     }
 
   pgsqlP = (gdbi_pgsql_ds_t*)dbh->db_info;
-  if (pgsqlP->res == NULL &&
-      (pgsqlP->res = PQgetResult(pgsqlP->pgsql)) == NULL)
+  if (NULL == pgsqlP->res)
+      pgsqlP->res = PQgetResult(pgsqlP->pgsql);
+
+  if (NULL == pgsqlP->res)
     {
       dbh->status = scm_cons(scm_from_int(0),
                                    scm_from_locale_string("row end"));
       pgsqlP->lget = 0;
       return (SCM_BOOL_F);
     }
-  else if (pgsqlP->lget == PQntuples(pgsqlP->res))
+
+  if (pgsqlP->lget == PQntuples(pgsqlP->res))
     {
       pgsqlP->res = PQgetResult(pgsqlP->pgsql);
     }
