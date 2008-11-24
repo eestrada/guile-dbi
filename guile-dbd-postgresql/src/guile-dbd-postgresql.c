@@ -303,6 +303,7 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 
   if (pgsqlP->lget == PQntuples(pgsqlP->res))
     {
+      PQclear(pgsqlP->res);
       pgsqlP->res = PQgetResult(pgsqlP->pgsql);
     }
 
