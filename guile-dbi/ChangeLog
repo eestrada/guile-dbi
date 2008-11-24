@@ -1,5 +1,6 @@
 Version 2.1.2:
 	* Patch from Mike gran, fixes function names in assert.
+	* Minor cleanup; avoid un-needed malloc/free.
 
 2008-09-15 Linas Vepstas <linasvepstas@gmail.com>
 
