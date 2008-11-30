@@ -25,4 +25,4 @@
 AUTOMAKE_OPTIONS = gnu
 SUBDIRS = src include doc
 
-EXTRA_DIST= DBI-VERSION
+EXTRA_DIST= DBI-VERSION autogen.sh
