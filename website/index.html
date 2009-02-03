@@ -48,15 +48,16 @@ DBD back-ends for Postgres on MySQL. Creating additional DBD back-ends
 requires a small amount of C coding, but is a straightforward task.
 </p>
 <p>
-Guile-dbi is simple -- which is both a blessing and a curse.  For the
+Guile-dbi is simple - which is both a blessing and a curse.  For the
 most part, all that it does is to accept guile strings encoding SQL
 statements, forward these to the database, and return rows as scheme
-association lists. A minimal amount of translation is performed -- 
-SQL floating point columns are converted to scheme floating point
-numbers -- but there is nothing fancier than this -- there is no 
-special treatment for dates, currencies, <i>etc.</i>.  At this time,
-there is no support for prepared statements. Capable programmers are
-invited to add support for this and other missing features.
+association lists. A minimal amount of translation is performed - 
+for example, SQL floating point columns are converted to scheme 
+floating point numbers - but there is nothing fancier than this - 
+there is no special treatment for dates, currencies, <i>etc.</i>  
+At this time, there is no support for prepared statements. Capable
+programmers are invited to add support for this and other missing
+features.
 </p>
 
 <h2>Documentation</h2>
