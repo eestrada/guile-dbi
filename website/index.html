@@ -35,14 +35,29 @@
 
 <a name="news">
 <h2>About</h2></a>
-
+<p>
 <b>guile-dbi</b> provides a simple, generic, easy-to-use scheme/guile
 interface to SQL databases, such as Postgres or MySQL.
+</p>
 <p>
-The system is split into two parts: the DBI (database independent)
-part, which provides the scheme interfaces, and the DBD (database dependent)
-plugins, which connect to the actual SQL server. Currently, there are
-DBD backends for Postgres on MySQL.
+The system is 'generic' in the sense that the same programming interface
+(front end) can be used with different databases.  The DBI (database 
+independent) part provides the scheme interfaces. The  DBD (database 
+dependent) plugins connect to an actual SQL server. Currently, there are
+DBD back-ends for Postgres on MySQL. Creating additional DBD back-ends
+requires a small amount of C coding, but is a straightforward task.
+</p>
+<p>
+Guile-dbi is simple -- which is both a blessing and a curse.  For the
+most part, all that it does is to accept guile strings encoding SQL
+statements, forward these to the database, and return rows as scheme
+association lists. A minimal amount of translation is performed -- 
+SQL floating point columns are converted to scheme floating point
+numbers -- but there is nothing fancier than this -- there is no 
+special treatment for dates, currencies, <i>etc.</i>.  At this time,
+there is no support for prepared statements. Capable programmers are
+invited to add support for this and other missing features.
+</p>
 
 <h2>Documentation</h2>
 The guile-dbi user-manual and reference is 
