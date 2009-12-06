@@ -24,12 +24,14 @@
 AC_PREREQ(2.57)
 AC_INIT
 . $srcdir/DBD-VERSION
-AM_INIT_AUTOMAKE($PACKAGE,$VERSION,baux@member.fsf.org)
+AM_INIT_AUTOMAKE($PACKAGE,$VERSION,bug-guile@gnu.org)
 AM_MAINTAINER_MODE
 AC_CONFIG_HEADER([config.h])
 AC_GNU_SOURCE
 
 maintainer_mode=${enable_maintainer_mode-no}
+
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CC
