@@ -1,4 +1,7 @@
-Version 2.1.2:
+Version 2.1.3:
+	* Remove deprecated header file guile/gh.h from test case.
+
+Version 2.1.2 (2008-11-24):
 	* Patch from Mike gran, fixes function names in assert.
 	* Minor cleanup; avoid un-needed malloc/free.
 
