@@ -23,7 +23,6 @@
 
 #include <guile-dbi/guile-dbi.h>
 #include <libguile.h>
-#include <guile/gh.h>
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
