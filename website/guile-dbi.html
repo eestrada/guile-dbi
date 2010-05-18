@@ -199,15 +199,15 @@ Currently, these are MySQL, Postgres and SQLite3.
 	(dbi-open &quot;sqlite3&quot; &quot;my-example-db&quot;)
 )
 
-(dbi-query db-obj &quot;create table testtable(id int, name varchar(15))&quot;)
+(dbi-query db-obj &quot;create table hellotable(id int, name varchar(15))&quot;)
 (display db-obj) (newline)
 
-(dbi-query db-obj &quot;insert into testtable ('id', 'name') values('33', 'testname1')&quot;)
-(dbi-query db-obj &quot;insert into testtable ('id', 'name') values('34', 'testname1')&quot;)
-(dbi-query db-obj &quot;insert into testtable ('id', 'name') values('44', 'testname2')&quot;)
+(dbi-query db-obj &quot;insert into hellotable ('id', 'name') values('33', 'ola')&quot;)
+(dbi-query db-obj &quot;insert into hellotable ('id', 'name') values('34', 'dzien dobre')&quot;)
+(dbi-query db-obj &quot;insert into hellotable ('id', 'name') values('44', 'annyong haseyo')&quot;)
 (display db-obj) (newline)
 
-(dbi-query db-obj &quot;select * from testtable where name='testname1'&quot;)
+(dbi-query db-obj &quot;select * from hellotable&quot;)
 (display db-obj) (newline)
 (write (dbi-get_row db-obj)) (newline)
 (write (dbi-get_row db-obj)) (newline)
