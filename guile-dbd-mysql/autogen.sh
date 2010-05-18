@@ -85,8 +85,8 @@ done
 if $run_configure; then
     ./configure --enable-maintainer-mode "$@"
     echo
-    echo "Now type 'make' to compile guile-dbd-postgresql."
+    echo "Now type 'make' to compile guile-dbd-mysql."
 else
     echo
-    echo "Now run 'configure' and 'make' to compile guile-dbd-postgresql."
+    echo "Now run 'configure' and 'make' to compile guile-dbd-mysql."
 fi
