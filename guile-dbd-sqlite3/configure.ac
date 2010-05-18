@@ -4,17 +4,17 @@
 # Edited by Julian Kalbhenn <jkal@gmx.net>
 #
 # This file is part of the guile-dbd-sqlite3.
-# 
+#
 # The guile-dbd-sqlite3 is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # The guile-dbd-sqlite3 is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
@@ -25,7 +25,7 @@
 AC_PREREQ(2.57)
 AC_INIT
 . $srcdir/DBD-VERSION
-AM_INIT_AUTOMAKE($PACKAGE,$VERSION,baux@member.fsf.org)
+AM_INIT_AUTOMAKE($PACKAGE,$VERSION,bug-guile@gnu.org)
 AM_MAINTAINER_MODE
 AC_CONFIG_HEADER([config.h])
 AC_GNU_SOURCE
@@ -42,9 +42,9 @@ AC_CHECK_TOOL([NM], [nm], :)
 
 AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([strndup])
-AC_CHECK_HEADERS([string.h]) 
+AC_CHECK_HEADERS([string.h])
 AC_FUNC_MALLOC
-AC_HEADER_STDC 
+AC_HEADER_STDC
 
 # Checks for libs
 AC_CHECK_LIB(sqlite3,
