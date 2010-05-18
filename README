@@ -8,6 +8,10 @@ scp blah linasvepstas@download.gna.org:/upload/guile-dbi/
 ------------
 the website is auto-updated from svn, by cron job (so not immediate)
 
+cd trunk/guile-dbi/doc
+texi2html --no-menu -no-sec-nav guile-dbi.texi
+mv guile-dbi.html ../../../website
+
 stats: 
 http://stats.gna.org/homepage.gna.org/guile-dbi/
 http://stats.gna.org/download.gna.org/guile-dbi/
