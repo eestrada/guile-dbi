@@ -1,0 +1,13 @@
+
+to upload files:
+
+https://gna.org/cookbook/?119
+
+scp blah linasvepstas@download.gna.org:/upload/guile-dbi/
+
+------------
+the website is auto-updated from svn, by cron job (so not immediate)
+
+stats: 
+http://stats.gna.org/homepage.gna.org/guile-dbi/
+http://stats.gna.org/download.gna.org/guile-dbi/
