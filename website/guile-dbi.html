@@ -92,12 +92,12 @@ manual, corresponding to Guile DBI version 2.1.1.
 <h1 class="chapter"> 1. Introduction </h1>
 
 <p>guile-dbi provides a simple, generic, easy-to-use scheme/guile interface
-to SQL databases, such as Postgres or MySQL.
+to SQL databases, such as Postgres, MySQL or SQLite.
 </p>
 <p>The system is split into two parts: the DBI (database independent)
 part, which provides the scheme interfaces, and the DBD (database
 dependent) plugins, which connect to the actual SQL server. Currently,
-there are DBD backends for Postgres on MySQL.
+there are DBD backends for Postgres, MySQL and SQLite3.
 </p>
 <hr size="6">
 <a name="SEC2"></a>
@@ -187,7 +187,7 @@ and <code>dbi-get_row</code>.
 </p>
 <br>
 <p>Guile DBI supports any database for which a dbd backend is written.
-Currently, these are MySQL and Postgres.
+Currently, these are MySQL, Postgres and SQLite3.
 </p>
 <p>Below follows an example usage with the MySQL database:
 </p>
@@ -399,7 +399,7 @@ driver. When driver's reference count is 0, it is freed.
 </pre></td></tr></table>
 
 <ul>
-<li> <code>bcknd</code> stores backend name (i.e. mysql or postgresql...).
+<li> <code>bcknd</code> stores backend name (i.e. mysql, postgresql, sqlite,...).
 </li><li> <code>constr</code> string, stores the backend connection string. This
 is not touched by guile-dbi, but is passed &ldquo;as is&rdquo; to the databse plugin.
 </li><li> <code>status</code> this is a pair which is used to return information from
@@ -530,9 +530,9 @@ reference to linked dbd is decremented until is 0.
 </tr></table>
 <h2 class="section"> 4.4 How to write plugins </h2>
 
-<p>Writing a plugin is fairly easy (have a look at mysql or postgres dbd source 
-code...). You will need to supply a few functions with appropriiately
-chosen names.
+<p>Writing a plugin is fairly easy (have a look at the mysql, postgres 
+   or sqlite dbd source code...). You will need to supply a few functions 
+   with appropriiately chosen names.
 </p>
 <br>
 <p>These are the functions and return types you should supply for 
