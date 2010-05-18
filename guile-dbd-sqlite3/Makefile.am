@@ -21,6 +21,8 @@
 #                                               -*- Makefile -*-
 # Process this file with autoconf to produce a configure script.
 
+ACLOCAL_AMFLAGS = -I m4
+
 AUTOMAKE_OPTIONS = gnu
 SUBDIRS = src
 
