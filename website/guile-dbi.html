@@ -189,7 +189,36 @@ and <code>dbi-get_row</code>.
 <p>Guile DBI supports any database for which a dbd backend is written.
 Currently, these are MySQL, Postgres and SQLite3.
 </p>
-<p>Below follows an example usage with the MySQL database:
+<p>Here's an example usage, using SQLite3:
+</p>
+<table><tr><td>&nbsp;</td><td><pre class="example">#!/usr/bin/guile -s
+!#
+
+(use-modules (dbi dbi))
+(define db-obj
+	(dbi-open &quot;sqlite3&quot; &quot;my-example-db&quot;)
+)
+
+(dbi-query db-obj &quot;create table testtable(id int, name varchar(15))&quot;)
+(display db-obj) (newline)
+
+(dbi-query db-obj &quot;insert into testtable ('id', 'name') values('33', 'testname1')&quot;)
+(dbi-query db-obj &quot;insert into testtable ('id', 'name') values('34', 'testname1')&quot;)
+(dbi-query db-obj &quot;insert into testtable ('id', 'name') values('44', 'testname2')&quot;)
+(display db-obj) (newline)
+
+(dbi-query db-obj &quot;select * from testtable where name='testname1'&quot;)
+(display db-obj) (newline)
+(write (dbi-get_row db-obj)) (newline)
+(write (dbi-get_row db-obj)) (newline)
+(write (dbi-get_row db-obj)) (newline)
+(write (dbi-get_row db-obj)) (newline)
+
+(dbi-close db-obj)
+(display db-obj) (newline)
+</pre></td></tr></table>
+
+<p>Here's another example, with the MySQL database:
 </p>
 <table><tr><td>&nbsp;</td><td><pre class="example">#!/usr/bin/guile \
 -e main -s
