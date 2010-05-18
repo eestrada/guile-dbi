@@ -34,6 +34,16 @@ echo "Creating aclocal.m4: aclocal $ACLOCAL_FLAGS $ACLOCAL_BINRELOC"
 
 aclocal $ACLOCAL_FLAGS $ACLOCAL_BINRELOC 2>> autogen.err
 
+# Produce config.h.in
+echo "autoheader"
+
+autoheader 2>> autogen.err || {
+    echo ""
+    echo "* * * warning: possible errors while running autoheader - check autogen.err"
+    echo ""
+}
+
+
 # Produce all the `GNUmakefile.in's and create neat missing things
 # like `install-sh', etc.
 # 
