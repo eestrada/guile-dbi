@@ -32,6 +32,8 @@ AC_GNU_SOURCE
 
 maintainer_mode=${enable_maintainer_mode-no}
 
+AC_CONFIG_MACRO_DIR([m4])
+
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_AS
