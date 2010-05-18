@@ -27,6 +27,7 @@ AC_INIT
 . $srcdir/DBD-VERSION
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION,bug-guile@gnu.org)
 AM_MAINTAINER_MODE
+LT_INIT
 AC_CONFIG_HEADER([config.h])
 AC_GNU_SOURCE
 
@@ -36,6 +37,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 AM_PROG_AS
 AC_PROG_LIBTOOL
 AC_CHECK_TOOL([AR], [ar], :)
@@ -49,7 +51,7 @@ AC_FUNC_MALLOC
 AC_HEADER_STDC
 
 # Checks for libs
-AC_CHECK_LIB(sqlite3,
+AC_CHECK_LIB(sqlite3,sqlite3_open_v2,,
         AC_MSG_ERROR([*** Can't find sqlite3]))
 
 # Checks for typedefs, structures, and compiler characteristics.
