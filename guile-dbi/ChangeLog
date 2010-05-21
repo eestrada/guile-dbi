@@ -1,6 +1,7 @@
 
 Version 2.1.4: (2010-05-21):
-	* Use guile-config to get librariy locations, include-files.
+	* Use guile-config to get library, include-file locations.
+	* Add a pkg-config guile-dbi.pc file
 
 Version 2.1.3: (2010-05-18):
 	* Remove deprecated header file guile/gh.h from test case.
