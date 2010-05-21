@@ -39,7 +39,12 @@ AM_PROG_AS
 AC_PROG_LIBTOOL
 AC_CHECK_TOOL([AR], [ar], :)
 AC_CHECK_TOOL([NM], [nm], :)
+AC_PATH_PROG([GUILECONFIG], [guile-config], :)
 
+# Checks for typedefs, structures, and compiler characteristics.
+AC_CANONICAL_HOST
+AC_C_CONST
+AC_C_VOLATILE
 
 AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([strndup])
@@ -51,10 +56,9 @@ AC_HEADER_STDC
 AC_CHECK_LIB(mysqlclient,mysql_init,,
         AC_MSG_ERROR([*** Can't find libmysql]))
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_CANONICAL_HOST
-AC_C_CONST
-AC_C_VOLATILE
+CFLAGS=`guile-config compile`
+LIBS=`guile-config link`
+
 
 AC_SUBST(DBD_MAJOR_VERSION)
 AC_SUBST(DBD_MINOR_VERSION)
@@ -66,3 +70,13 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile])
 
 AC_OUTPUT
+
+dnl ====================================================================
+echo "
+$PACKAGE-$VERSION
+
+	prefix:      ${prefix}
+	compiler:    ${CC} ${CPPFLAGS} ${CFLAGS}
+	link:        ${LIBS}
+"
+
