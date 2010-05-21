@@ -57,6 +57,9 @@ LT_INIT
 # AC_PROG_INSTALL
 # AC_PROG_MAKE_SET
 
+CFLAGS=`guile-config compile`
+LIBS=`guile-config link`
+
 AC_SUBST(DBI_MAJOR_VERSION)
 AC_SUBST(DBI_MINOR_VERSION)
 AC_SUBST(DBI_MICRO_VERSION)
@@ -74,6 +77,15 @@ AC_CONFIG_FILES([Makefile
 		 doc/Makefile])
 
 AC_CONFIG_FILES([src/test/check-guile-dbi],
-	[chmod oug+x src/test/check-guile-dbi])
+	[chmod ugo+x src/test/check-guile-dbi])
 
 AC_OUTPUT
+
+dnl ====================================================================
+echo "
+$PACKAGE-$VERSION
+
+	prefix:      ${prefix}
+	compiler:    ${CC} ${CPPFLAGS} ${CFLAGS}
+	link:        ${LIBS}
+"
