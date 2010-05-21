@@ -40,6 +40,7 @@ AC_PROG_LIBTOOL
 AC_CHECK_TOOL([AR], [ar], :)
 AC_CHECK_TOOL([NM], [nm], :)
 AC_PATH_PROG([GUILECONFIG], [guile-config], :)
+AC_PATH_PROG([MYSQLCONFIG], [mysql_config], :)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CANONICAL_HOST
@@ -59,6 +60,11 @@ AC_CHECK_LIB(mysqlclient,mysql_init,,
 CFLAGS=`guile-config compile`
 LIBS=`guile-config link`
 
+MYSQL_CFLAGS=`mysql_config --cflags`
+MYSQL_LIBS=`mysql_config --libs_r`
+
+CFLAGS="${CFLAGS} ${MYSQL_CFLAGS}"
+LIBS="${LIBS} ${MYSQL_LIBS}"
 
 AC_SUBST(DBD_MAJOR_VERSION)
 AC_SUBST(DBD_MINOR_VERSION)
