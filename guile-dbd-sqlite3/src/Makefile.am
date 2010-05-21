@@ -23,14 +23,14 @@
 
 
 AUTOMAKE_OPTIONS = gnu
-INCLUDES = -I/usr/include
+INCLUDES = ${CFLAGS} -I/usr/include
 
 
 lib_LTLIBRARIES = libguile-dbd-sqlite3.la
 
 
 libguile_dbd_sqlite3_la_SOURCES = guile-dbd-sqlite3.c
-libguile_dbd_sqlite3_la_LIBADD = -ldl -lz -lguile -lsqlite3
+libguile_dbd_sqlite3_la_LIBADD = -ldl -lz ${LIBS} -lsqlite3
 libguile_dbd_sqlite3_la_LDFLAGS = -export-dynamic \
 	-version-info @DBD_INTERFACE@
 libguile_dbd_sqlite3_la_DEPENDENCIES = $(LTLIBOBJS)
