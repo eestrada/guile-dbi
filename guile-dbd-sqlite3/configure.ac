@@ -44,6 +44,9 @@ AC_CHECK_TOOL([AR], [ar], :)
 AC_CHECK_TOOL([NM], [nm], :)
 AC_PATH_PROG([GUILECONFIG], [guile-config], :)
 
+# wtf ... why is this not expanding ??? 
+# PKG_PROG_PKG_CONFIG
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CANONICAL_HOST
 AC_C_CONST
@@ -55,8 +58,16 @@ AC_CHECK_HEADERS([string.h])
 AC_FUNC_MALLOC
 AC_HEADER_STDC
 
-CFLAGS=`guile-config compile`
-LIBS=`guile-config link`
+GUILE_CFLAGS=`guile-config compile`
+GUILE_LIBS=`guile-config link`
+
+# wtf
+# PKG_CHECK_MODULES(SQLITE3, sqlite3 >= 3.0.0)
+SQLITE3_CFLAGS=`pkg-config sqlite3 --cflags`
+SQLITE3_LIBS=`pkg-config sqlite3 --libs`
+
+CFLAGS="${GUILE_CFLAGS} ${SQLITE3_CFLAGS}"
+LIBS="${GUILE_LIBS} ${SQLITE3_LIBS}"
 
 # Checks for libs
 AC_CHECK_LIB(sqlite3,sqlite3_open_v2,,
@@ -67,6 +78,9 @@ AC_SUBST(DBD_MINOR_VERSION)
 AC_SUBST(DBD_MICRO_VERSION)
 AC_SUBST(DBD_INTERFACE)
 AC_SUBST(VERSION)
+AC_SUBST(SQLITE3_CFLAGS)
+AC_SUBST(SQLITE3_LIBS)
+
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile])
