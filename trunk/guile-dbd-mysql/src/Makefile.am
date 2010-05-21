@@ -30,7 +30,7 @@ lib_LTLIBRARIES = libguile-dbd-mysql.la
 
 
 libguile_dbd_mysql_la_SOURCES = guile-dbd-mysql.c
-libguile_dbd_mysql_la_LIBADD = -ldl -lz $(LIBS) -lmysqlclient
+libguile_dbd_mysql_la_LIBADD = -ldl -lz $(LIBS) 
 libguile_dbd_mysql_la_LDFLAGS = -export-dynamic \
 	-version-info @DBD_INTERFACE@
 libguile_dbd_mysql_la_DEPENDENCIES = $(LTLIBOBJS)
