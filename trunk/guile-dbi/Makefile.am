@@ -26,4 +26,7 @@ ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = gnu
 SUBDIRS = src include doc
 
-EXTRA_DIST= DBI-VERSION autogen.sh
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = guile-dbi.pc
+
+EXTRA_DIST= DBI-VERSION autogen.sh guile-dbi.pc.in
