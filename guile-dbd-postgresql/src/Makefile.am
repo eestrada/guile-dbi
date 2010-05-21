@@ -23,14 +23,14 @@
 
 
 AUTOMAKE_OPTIONS = gnu
-INCLUDES = -I/usr/include
+INCLUDES = $(CFLAGS) -I/usr/include 
 
 
 lib_LTLIBRARIES = libguile-dbd-postgresql.la
 
 
 libguile_dbd_postgresql_la_SOURCES = guile-dbd-postgresql.c
-libguile_dbd_postgresql_la_LIBADD = -ldl -lz -lguile -lpq
+libguile_dbd_postgresql_la_LIBADD = -ldl -lz -lpq $(LIBS)
 libguile_dbd_postgresql_la_LDFLAGS = -export-dynamic \
 	-version-info @DBD_INTERFACE@
 libguile_dbd_postgresql_la_DEPENDENCIES = $(LTLIBOBJS)

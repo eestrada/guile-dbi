@@ -26,13 +26,13 @@ AC_INIT
 . $srcdir/DBD-VERSION
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION,bug-guile@gnu.org)
 AM_MAINTAINER_MODE
-LT_INIT
 AC_CONFIG_HEADER([config.h])
 AC_GNU_SOURCE
 
 maintainer_mode=${enable_maintainer_mode-no}
 
 AC_CONFIG_MACRO_DIR([m4])
+LT_INIT
 
 # Checks for programs.
 AC_PROG_CC
@@ -41,6 +41,13 @@ AM_PROG_AS
 AC_PROG_LIBTOOL
 AC_CHECK_TOOL([AR], [ar], :)
 AC_CHECK_TOOL([NM], [nm], :)
+AC_PATH_PROG([GUILECONFIG], [guile-config], :)
+
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_CANONICAL_HOST
+AC_C_CONST
+AC_C_VOLATILE
 
 AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([strndup])
@@ -52,10 +59,8 @@ AC_HEADER_STDC
 AC_CHECK_LIB(pq,PQconnectStart,,
         AC_MSG_ERROR([*** Can't find libpq]))
 
-# Checks for typedefs, structures, and compiler characteristics.
-AC_CANONICAL_HOST
-AC_C_CONST
-AC_C_VOLATILE
+CFLAGS=`guile-config compile`
+LIBS=`guile-config link`
 
 AC_SUBST(DBD_MAJOR_VERSION)
 AC_SUBST(DBD_MINOR_VERSION)
@@ -67,3 +72,13 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile])
 
 AC_OUTPUT
+
+dnl ====================================================================
+echo "
+$PACKAGE-$VERSION
+
+   prefix:      ${prefix}
+   compiler:    ${CC} ${CPPFLAGS} ${CFLAGS}
+   link:        ${LIBS}
+"
+
