@@ -1,3 +1,5 @@
+Pending:
+	* Cleanued up README, TODO files.
 
 Version 2.1.4: (2010-05-21):
 	* Use guile-config to get library, include-file locations.
