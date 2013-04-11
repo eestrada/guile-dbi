@@ -35,8 +35,8 @@ static scm_t_bits g_db_handle_tag;
 
 
 SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
-	    (SCM bcknd, SCM conn_string),
-	    "Build db_handle smob.")
+            (SCM bcknd, SCM conn_string),
+            "Build db_handle smob.")
 #define FUNC_NAME s_make_g_db_handle
 {
   char* sodbd = NULL;
@@ -48,7 +48,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   SCM_ASSERT (scm_is_string(conn_string), conn_string, SCM_ARG2, FUNC_NAME);
 
   g_db_handle = (gdbi_db_handle_t *) scm_gc_malloc(sizeof(gdbi_db_handle_t),
-						   "g_db_handle");
+                                                   "g_db_handle");
 
   g_db_handle->bcknd   = bcknd;
   g_db_handle->constr  = conn_string;
@@ -61,12 +61,12 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
 
   /* The +20 allos for .so or .dylib on MacOS */
   sodbd_len = sizeof(char) * (strlen("libguile-dbd-") +
-	           g_db_handle->bcknd_strlen + 20);
+                   g_db_handle->bcknd_strlen + 20);
   sodbd = (char*) malloc (sodbd_len);
   if (sodbd == NULL)
     {
       g_db_handle->status = scm_cons(scm_from_int(errno),
-				     scm_from_locale_string(strerror(errno)));
+                                     scm_from_locale_string(strerror(errno)));
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
 
@@ -81,7 +81,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
     {
       free(sodbd);
       g_db_handle->status =  scm_cons(scm_from_int(1),
-			      scm_from_locale_string(dlerror()));      
+                              scm_from_locale_string(dlerror()));      
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
 
@@ -124,7 +124,7 @@ mark_db_handle (SCM g_db_handle_smob)
 /* fix this using bcknd function to print */
 static int 
 print_db_handle (SCM g_db_handle_smob, SCM port,
-		 scm_print_state* pstate)
+                 scm_print_state* pstate)
 {
   gdbi_db_handle_t* g_db_handle = (gdbi_db_handle_t*)
     SCM_SMOB_DATA(g_db_handle_smob);
@@ -150,8 +150,8 @@ print_db_handle (SCM g_db_handle_smob, SCM port,
 
 
 SCM_DEFINE (close_g_db_handle, "dbi-close", 1, 0, 0,
-	    (SCM db_handle),
-	    "Close db connection.")
+            (SCM db_handle),
+            "Close db connection.")
 #define FUNC_NAME s_close_g_db_handle
 {
   gdbi_db_handle_t *g_db_handle = NULL;
@@ -208,8 +208,8 @@ free_db_handle (SCM g_db_handle_smob)
 
 
 SCM_DEFINE (query_g_db_handle, "dbi-query", 2, 0, 0,
-	    (SCM db_handle, SCM query),
-	    "Do a query and set status.")
+            (SCM db_handle, SCM query),
+            "Do a query and set status.")
 #define FUNC_NAME s_query_g_db_handle
 {
   gdbi_db_handle_t *g_db_handle = NULL;
@@ -238,8 +238,8 @@ SCM_DEFINE (query_g_db_handle, "dbi-query", 2, 0, 0,
 
 
 SCM_DEFINE (getrow_g_db_handle, "dbi-get_row", 1, 0, 0,
-	    (SCM db_handle),
-	    "Do a query and return a row in form of pair list or false")
+            (SCM db_handle),
+            "Do a query and return a row in form of pair list or false")
 #define FUNC_NAME s_getrow_g_db_handle
 {
   gdbi_db_handle_t *g_db_handle = NULL;
@@ -266,8 +266,8 @@ SCM_DEFINE (getrow_g_db_handle, "dbi-get_row", 1, 0, 0,
 
 
 SCM_DEFINE (getstat_g_db_handle, "dbi-get_status", 1, 0, 0,
-	    (SCM db_handle),
-	    "Return status pair, code and msg, from dbi smob.")
+            (SCM db_handle),
+            "Return status pair, code and msg, from dbi smob.")
 #define FUNC_NAME s_getstat_g_db_handle
 {
   gdbi_db_handle_t *g_db_handle = NULL;
@@ -293,7 +293,7 @@ void
 init_db_handle_type(void)
 {
   g_db_handle_tag = scm_make_smob_type("g_db_handle",
-				       sizeof(gdbi_db_handle_t));
+                                       sizeof(gdbi_db_handle_t));
   scm_set_smob_mark (g_db_handle_tag, mark_db_handle);
   scm_set_smob_free (g_db_handle_tag, free_db_handle);
   scm_set_smob_print (g_db_handle_tag, print_db_handle);
@@ -318,7 +318,7 @@ init_dbi(void)
 /* dbd handler */
 void
 __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
-		void** function_pointer)
+                void** function_pointer)
 {
   char *ret   = NULL;
   char *func  = NULL;
@@ -330,7 +330,7 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
     {
       if (dbh->in_free) return; /* do not SCM anything while in GC */
       dbh->status = scm_cons(scm_from_int(errno),
-				   scm_from_locale_string(strerror(errno)));
+                             scm_from_locale_string(strerror(errno)));
       return;
     }
 
@@ -342,7 +342,7 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
       free(func);
       if (dbh->in_free) return; /* do not SCM anything while in GC */
       dbh->status = scm_cons(scm_from_int(1),
-				   scm_from_locale_string(ret));
+                             scm_from_locale_string(ret));
       return;
     }
 
@@ -351,5 +351,5 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
   if (dbh->in_free) return; /* do not SCM anything while in GC */
   /* todo: error msg to be translated */
   dbh->status = scm_cons(scm_from_int(0),
-			   scm_from_locale_string("symbol loaded"));
+                         scm_from_locale_string("symbol loaded"));
 }
