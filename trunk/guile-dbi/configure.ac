@@ -35,7 +35,9 @@ maintainer_mode=${enable_maintainer_mode-no}
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_AS
+AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PROG_MAKE_SET
 AC_CHECK_TOOL([AR], [ar], :)
 AC_CHECK_TOOL([NM], [nm], :)
 AC_CHECK_TOOL([GREG], [greg], :)
@@ -43,12 +45,12 @@ AC_PATH_PROG([GUILESNARF], [guile-snarf], :)
 AC_PATH_PROG([GUILECONFIG], [guile-config], :)
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_LANG([C])
 AC_CANONICAL_HOST
 AC_C_CONST
 AC_C_VOLATILE
 AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
-AC_PROG_LIBTOOL
 AC_CHECK_FUNCS([strerror])
 
 # ltmain needs these:
@@ -56,9 +58,11 @@ AC_CONFIG_MACRO_DIR([m4])
 LT_INIT
 # AC_PROG_INSTALL
 # AC_PROG_MAKE_SET
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])], [AC_SUBST([AM_DEFAULT_VERBOSITY],1)])
 
-CFLAGS=`guile-config compile`
-LIBS=`guile-config link`
+
+CFLAGS=`$GUILECONFIG compile`
+LIBS=`$GUILECONFIG link`
 
 AC_SUBST(DBI_MAJOR_VERSION)
 AC_SUBST(DBI_MINOR_VERSION)
