@@ -29,7 +29,7 @@ lib_LTLIBRARIES = libguile-dbd-test.la
 
 
 libguile_dbd_test_la_SOURCES = guile-dbd-test.c
-libguile_dbd_test_la_LIBADD = -ldl -lz -lguile 
+libguile_dbd_test_la_LIBADD = -ldl -lz $(LIBS)
 libguile_dbd_test_la_LDFLAGS = -export-dynamic 
 libguile_dbd_test_la_DEPENDENCIES = $(LTLIBOBJS)
 
