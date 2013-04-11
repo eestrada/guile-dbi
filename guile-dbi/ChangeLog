@@ -1,5 +1,5 @@
 Version 2.1.5: (2013-04-11):
-	* Cleanued up README, TODO files.
+	* Cleaned up README, TODO files.
 	* Missing use of guile-config in test directory.
 	* Fix .so vs. .dylib dynalically loadable lib issue for Mac OSX.
 	* Remove deprecated guile function warnings.
