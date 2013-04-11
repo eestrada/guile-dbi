@@ -44,8 +44,15 @@ and Linas Vepstas <linasvepstas@gmail.org>
    make
    make install
 
-   Be sure to do the above steps for the guile-dbd backends
+   Be sure to also do the above steps for the guile-dbd backends
    you wish to run!
+
+* Testing
+
+  make check
+
+  Requires the greg testing framework, available at 
+  http://home.gna.org/greg/
 
 * Guile DBI Documentation
 

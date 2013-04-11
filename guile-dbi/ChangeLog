@@ -1,5 +1,7 @@
-Pending:
+Version 2.1.5: Pending:
 	* Cleanued up README, TODO files.
+	* Missing use of guile-config in test directory
+	* Fix .so vs. .dylib dynalically loadable lib issue for Mac OSX
 
 Version 2.1.4: (2010-05-21):
 	* Use guile-config to get library, include-file locations.
