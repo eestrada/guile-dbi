@@ -1,11 +1,12 @@
-Version 2.1.5: Pending:
+Version 2.1.5: (2013-04-11):
 	* Cleanued up README, TODO files.
-	* Missing use of guile-config in test directory
-	* Fix .so vs. .dylib dynalically loadable lib issue for Mac OSX
+	* Missing use of guile-config in test directory.
+	* Fix .so vs. .dylib dynalically loadable lib issue for Mac OSX.
+	* Remove deprecated guile function warnings.
 
 Version 2.1.4: (2010-05-21):
 	* Use guile-config to get library, include-file locations.
-	* Add a pkg-config guile-dbi.pc file
+	* Add a pkg-config guile-dbi.pc file.
 
 Version 2.1.3: (2010-05-18):
 	* Remove deprecated header file guile/gh.h from test case.

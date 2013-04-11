@@ -66,7 +66,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   if (sodbd == NULL)
     {
       g_db_handle->status = scm_cons(scm_from_int(errno),
-				     scm_makfrom0str(strerror(errno)));
+				     scm_from_locale_string(strerror(errno)));
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
 
@@ -81,7 +81,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
     {
       free(sodbd);
       g_db_handle->status =  scm_cons(scm_from_int(1),
-			      scm_makfrom0str(dlerror()));      
+			      scm_from_locale_string(dlerror()));      
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
 
@@ -330,7 +330,7 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
     {
       if (dbh->in_free) return; /* do not SCM anything while in GC */
       dbh->status = scm_cons(scm_from_int(errno),
-				   scm_makfrom0str(strerror(errno)));
+				   scm_from_locale_string(strerror(errno)));
       return;
     }
 
@@ -342,7 +342,7 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
       free(func);
       if (dbh->in_free) return; /* do not SCM anything while in GC */
       dbh->status = scm_cons(scm_from_int(1),
-				   scm_makfrom0str(ret));
+				   scm_from_locale_string(ret));
       return;
     }
 
@@ -351,5 +351,5 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
   if (dbh->in_free) return; /* do not SCM anything while in GC */
   /* todo: error msg to be translated */
   dbh->status = scm_cons(scm_from_int(0),
-			   scm_makfrom0str("symbol loaded"));
+			   scm_from_locale_string("symbol loaded"));
 }
