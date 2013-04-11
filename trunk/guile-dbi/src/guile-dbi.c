@@ -40,6 +40,7 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
 #define FUNC_NAME s_make_g_db_handle
 {
   char* sodbd = NULL;
+  size_t sodbd_len;
   gdbi_db_handle_t *g_db_handle = NULL;
   void (*connect)(gdbi_db_handle_t*);
 
@@ -58,15 +59,22 @@ SCM_DEFINE (make_g_db_handle, "dbi-open", 2, 0, 0,
   g_db_handle->bcknd_str = scm_to_locale_string (bcknd);
   g_db_handle->bcknd_strlen = strlen(g_db_handle->bcknd_str);
 
-  sodbd = (char*) malloc (sizeof(char) * (strlen("libguile-dbd-") +
-				      g_db_handle->bcknd_strlen + 10));
+  /* The +20 allos for .so or .dylib on MacOS */
+  sodbd_len = sizeof(char) * (strlen("libguile-dbd-") +
+	           g_db_handle->bcknd_strlen + 20);
+  sodbd = (char*) malloc (sodbd_len);
   if (sodbd == NULL)
     {
       g_db_handle->status = scm_cons(scm_from_int(errno),
 				     scm_makfrom0str(strerror(errno)));
       SCM_RETURN_NEWSMOB (g_db_handle_tag, g_db_handle);
     }
-  sprintf(sodbd, "libguile-dbd-%s.so", g_db_handle->bcknd_str);
+
+#ifdef  __APPLE__
+  snprintf(sodbd, sodbd_len, "libguile-dbd-%s.dylib", g_db_handle->bcknd_str);
+#else
+  snprintf(sodbd, sodbd_len, "libguile-dbd-%s.so", g_db_handle->bcknd_str);
+#endif
 
   g_db_handle->handle = dlopen(sodbd, RTLD_NOW);
   if (g_db_handle->handle == NULL)
@@ -314,9 +322,10 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
 {
   char *ret   = NULL;
   char *func  = NULL;
+  size_t func_len;
 
-  func = malloc(sizeof(char) * (strlen(function_name) + 
-      dbh->bcknd_strlen + 10));
+  func_len = sizeof(char) * (strlen(function_name) + dbh->bcknd_strlen + 10);
+  func = malloc(func_len);
   if (NULL == func)
     {
       if (dbh->in_free) return; /* do not SCM anything while in GC */
@@ -325,7 +334,8 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
       return;
     }
 
-  sprintf(func, "__%s_%s", dbh->bcknd_str, function_name);
+  /* I assume this is correct for all OS'es */
+  snprintf(func, func_len, "__%s_%s", dbh->bcknd_str, function_name);
   *function_pointer = dlsym(dbh->handle, func);
   if ((ret = dlerror()) != NULL)
     {
