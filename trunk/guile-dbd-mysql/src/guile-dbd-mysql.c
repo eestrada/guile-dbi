@@ -28,7 +28,18 @@
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
+#include "config.h"
 
+/* This function doesn't exist on Solaris 10u9 */
+#ifndef HAVE_STRNDUP
+static char *strndup(const char *s, size_t n)
+{
+	char* p = malloc(n + 1);
+	strncpy(p, s, n);
+	p[n] = 0;
+	return p;
+}
+#endif
 
 
 /* functions prototypes and structures */
