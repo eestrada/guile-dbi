@@ -207,6 +207,17 @@ already been created and populated with data:
 ))
 @end example
 
+Login credentials for PostgreSQL work similarly:
+@example
+#!/usr/bin/guile -e main -s
+!#
+
+(use-modules (dbi dbi))
+
+(define conxion (dbi-open "postgresql" "user:pass:pluto:tcp:localhost:5432"))
+(define conxion (dbi-open "postgresql" "user:pass:pluto:socket:/var/run/posgresql"))
+@end example
+
 
 @node Reference, Internals and Database Drivers, Tutorial, Top
 @chapter Reference
@@ -368,9 +379,10 @@ Once ``dlopen'' is ok, @code{__gdbi_dbd_wrap} is used to call the backend
 plugin connect function passing it the connection string. If this 
 step also succeeds, then the db should be connected. 
 @sp 1
-In every other dbi interface function, after type check, @code{__gdbi_dbd_wrap}
-is used to call dbd function. When close is called, after dbd close return, the 
-reference to linked dbd is decremented until is 0.
+In every other dbi interface function, after type check,
+@code{__gdbi_dbd_wrap} is used to call dbd function. When close is
+called, after dbd close return, the reference to linked dbd is
+decremented until is 0.
 
 @node How to write plugins, , How plugins are loaded, Internals and Database Drivers
 @section How to write plugins
