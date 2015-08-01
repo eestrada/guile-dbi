@@ -46,7 +46,7 @@ by the Free Software Foundation.
 @title Guile DBI Manual
 @subtitle For use with Guile DBI @value{VERSION}
 
-@author Maurizio Boriani 
+@author Maurizio Boriani
 @author @email{baux@@member.fsf.org}
 
 @author Linas Vepstas
@@ -82,7 +82,7 @@ by Free Software Foundation.
 @top Guile DBI Manual
 
 This reference manual documents Guile DBI, Guile Data Base Interface.
-It describes how to use Guile DBI and how to write new dbd database 
+It describes how to use Guile DBI and how to write new dbd database
 drivers.
 
 This Info file contains edition @value{VERSION} of the reference
@@ -91,10 +91,10 @@ manual, corresponding to Guile DBI version @value{VERSION}.
 @end ifnottex
 
 @menu
-* Introduction::                
-* Tutorial::                    
-* Reference::                   
-* Internals and Database Drivers::         
+* Introduction::
+* Tutorial::
+* Reference::
+* Internals and Database Drivers::
 @end menu
 
 @node Introduction, Tutorial, Top, Top
@@ -111,17 +111,17 @@ there are DBD backends for Postgres, MySQL and SQLite3.
 @section History
 
 In 2004, Maurizio Boriani wrote:
-<<I was looking around for a generic database library for guile scheme 
+<<I was looking around for a generic database library for guile scheme
 implementation and found some projects. But them, actually, wasn't
 really 'dynamic', simply compiled with different backend; I was
-looking for something which permit me to link database driver at 
+looking for something which permit me to link database driver at
 runtime (like dbi systems for perl or php, tcl and so on), but
 not found it. So I write it.>>
 
 In 2008, Linas Vepstas wrote:
 <<I was looking for a generic SQL database interface for guile, and
 this was the only one that was documented, and held any promise of
-working. After a few bug fixes, it worked to my satisfaction, and 
+working. After a few bug fixes, it worked to my satisfaction, and
 I now use it in one of my projects (the OpenCog NLP subsystem).>>
 
 @section Getting Guile DBI
@@ -130,14 +130,14 @@ You can find the latest version of Guile DBI at its project page,
 @url{http://www.gna.org/projects/guile-dbi/}.
 
 @*
-In the file download area, there are dbi and driver tarballs. 
+In the file download area, there are dbi and driver tarballs.
 
 @node Tutorial, Reference, Introduction, Top
 @chapter Tutorial
 
-The Scheme interface is very simple.  
+The Scheme interface is very simple.
 There are only 5 functions: @code{dbi-open},
-@code{dbi-close}, @code{dbi-query}, @code{dbi-get_status} 
+@code{dbi-close}, @code{dbi-query}, @code{dbi-get_status}
 and @code{dbi-get_row}.
 
 @*
@@ -178,7 +178,7 @@ Here's an example usage, using SQLite3:
 @end example
 
 Here's another example, using the MySQL database. This example assumes
-that the MySQL server is running, and that a table named "pippo" has 
+that the MySQL server is running, and that a table named "pippo" has
 already been created and populated with data:
 
 @example
@@ -230,7 +230,7 @@ Attempt to load driver @var{backend}, and connect to database passing
 @var{connString} (which is connection string) to driver connect function.
 
 If successful, it returns a @code{db-handle} object which is to be
-used to reference the newly opened database connection. This object also 
+used to reference the newly opened database connection. This object also
 contains result status.
 
 Every dbd implemention requires its own connection string format which
@@ -256,7 +256,7 @@ Example:
 @end deffn
 
 
-@deffn Primitive dbi-get_status db-handle 
+@deffn Primitive dbi-get_status db-handle
 
 Return a pair whose car is the status numeric code and cdr is a
 status string message. @var{db-handle} should be a valid database
@@ -267,8 +267,8 @@ handle object.
 
 @deffn Primitive dbi-get_row db-handle
 
-This function, called after dbi-query, returns @code{#f} if there isn't 
-a next row to retrive; otherwise it returns a pair. The car of the 
+This function, called after dbi-query, returns @code{#f} if there isn't
+a next row to retrive; otherwise it returns a pair. The car of the
 pair contains the field name and cdr is it's value.
 
 Example:
@@ -312,7 +312,7 @@ typedef struct g_db_handle
   SCM constr;
   SCM status;  /* pair: car = error numeric code, cdr = status message */
   SCM closed;  /* boolean, TRUE if closed otherwise FALSE */
-  void* handle; 
+  void* handle;
   void* db_info;
   int in_free; /* boolean, used to avoid alloc during garbage collection */
 @} gdbi_db_handle_t;
@@ -344,11 +344,11 @@ collection.
 @end defun
 
 This function is used to search for, and return, in the function
-pointer, the back-end functions in order to shadow them from main dbi 
-library. It uses a handle (which points to the back-end dynamically 
-loaded library) to search for a function named 
-``__bcknd_function_name''. In dbi interfaces functions (like open, close, 
-query...) the function_name is filled by C ``__FUNCTION__'' macro. 
+pointer, the back-end functions in order to shadow them from main dbi
+library. It uses a handle (which points to the back-end dynamically
+loaded library) to search for a function named
+``__bcknd_function_name''. In dbi interfaces functions (like open, close,
+query...) the function_name is filled by C ``__FUNCTION__'' macro.
 Status code and message are returned by status field in dbh.
 
 @defun void init_db_handle_type(void)
@@ -357,27 +357,27 @@ Status code and message are returned by status field in dbh.
 Used to register static functions used to manage dbh SMOB.
 
 @defun void init_dbi(void)
-@end defun 
+@end defun
 
 Used to expose guile-dbi symbols so, scheme can call them.
 
 @node How plugins are loaded, How to write plugins, Internal functions, Internals and Database Drivers
 @section How plugins are loaded
 
-Everything starts at @code{s_make_db_handle}. This function uses dlopen 
-to load a shared library named ``libguile-dbd-bcknd.so''. bcknd is the 
-first param of dbi-open. 
+Everything starts at @code{s_make_db_handle}. This function uses dlopen
+to load a shared library named ``libguile-dbd-bcknd.so''. bcknd is the
+first param of dbi-open.
 
 @*
-If the shared library is successfully loaded, the dbh's field ``handle'' 
-is filled with the pointer returned by ``dlopen'' and dbh->status is 
-set.  Otherwise the status is set to an error code in the car location, 
-while cdr is filled with an error message returned by @code{strerror}. 
+If the shared library is successfully loaded, the dbh's field ``handle''
+is filled with the pointer returned by ``dlopen'' and dbh->status is
+set.  Otherwise the status is set to an error code in the car location,
+while cdr is filled with an error message returned by @code{strerror}.
 
 @*
-Once ``dlopen'' is ok, @code{__gdbi_dbd_wrap} is used to call the backend 
-plugin connect function passing it the connection string. If this 
-step also succeeds, then the db should be connected. 
+Once ``dlopen'' is ok, @code{__gdbi_dbd_wrap} is used to call the backend
+plugin connect function passing it the connection string. If this
+step also succeeds, then the db should be connected.
 @sp 1
 In every other dbi interface function, after type check,
 @code{__gdbi_dbd_wrap} is used to call dbd function. When close is
@@ -388,11 +388,11 @@ decremented until is 0.
 @section How to write plugins
 
 Writing a plugin is fairly easy (have a look at the mysql, postgres or
-sqlite dbd source code). You will need to supply a few functions with 
+sqlite dbd source code). You will need to supply a few functions with
 appropriiately chosen names.
 
 @*
-These are the functions and return types you should supply for 
+These are the functions and return types you should supply for
 a well written dbd:
 @sp 1
 
@@ -401,7 +401,7 @@ a well written dbd:
 
 The ``bcknd'' is the name used by the open function.
 This function should parse the connection string
-and use params to connect to backend dbd database. Status should be 
+and use params to connect to backend dbd database. Status should be
 set in dbh in order to return useful informations. Don't forget
 to set dbh field ``closed'' to false if connection is correctly established.
 @sp 1
@@ -410,13 +410,13 @@ to set dbh field ``closed'' to false if connection is correctly established.
 @end defun
 
 Close the connection and perform any needed cleanup.
-Don't forget do set field ``closed'' to true if the connection 
+Don't forget do set field ``closed'' to true if the connection
 was correctly closed.
 
 @defun void __mysql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
 @end defun
 
-This should run the query and set the status, but should not return 
+This should run the query and set the status, but should not return
 any rows.  To return rows, the getrow function must be implemented.
 @sp 1
 
@@ -427,7 +427,7 @@ This function should return a single row from a previously executed
 query. It will typically be called more than once. When no more row
 are available a @code{#f} must be returned.
 
-A returned row must be an association list, that is, a list of pairs 
+A returned row must be an association list, that is, a list of pairs
 whose car is the field name and cdr is it's value (if possible, the
 value should use the closest possible guile/scheme type).
 
