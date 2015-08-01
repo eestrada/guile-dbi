@@ -1,5 +1,6 @@
 Version 2.1.6: (2015-08-01):
-	*
+	* Many fixes, sync with official version in git:
+	  https://github.com/jkalbhenn/guile-dbd-sqlite3
 
 Version 2.1.4: (2010-05-21):
 	* Use guile-config to get library, include-file locations.
