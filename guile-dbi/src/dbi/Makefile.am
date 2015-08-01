@@ -25,7 +25,7 @@
 AUTOMAKE_OPTIONS = gnu
 
 
-guiledbidatadir = `${GUILECONFIG} info pkgdatadir`/site/dbi
+guiledbidatadir = $(guilesitedir)/dbi
 guiledbidata_DATA = dbi.scm
 
 EXTRA_DIST = $(guiledbidata_DATA)

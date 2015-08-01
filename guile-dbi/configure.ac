@@ -63,12 +63,22 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])], [AC_SUBST([AM_DEFAULT_VERB
 
 CFLAGS=`$GUILECONFIG compile`
 LIBS=`$GUILECONFIG link`
+GUILE_SITE=`$GUILECONFIG info sitedir`
+
+AC_ARG_WITH([guile-site-dir],
+	[AS_HELP_STRING([--with-guile-site-dir=DIR],
+	    [use the specified installtion path for Guile modules [default=auto]]
+	)],
+	[guilesitedir="$withval"],
+	[guilesitedir="$GUILE_SITE"]
+)
 
 AC_SUBST(DBI_MAJOR_VERSION)
 AC_SUBST(DBI_MINOR_VERSION)
 AC_SUBST(DBI_MICRO_VERSION)
 AC_SUBST(DBI_INTERFACE)
 AC_SUBST(VERSION)
+AC_SUBST(guilesitedir)
 
 
 # Checks for library functions.
@@ -91,6 +101,7 @@ echo "
 $PACKAGE-$VERSION
 
 	prefix:      ${prefix}
+	sitedir:     ${guilesitedir}
 	compiler:    ${CC} ${CPPFLAGS} ${CFLAGS}
 	link:        ${LIBS}
 "
