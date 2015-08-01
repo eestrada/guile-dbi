@@ -27,7 +27,7 @@
 #include <mysql/errmsg.h>
 #include <string.h>
 #include <errno.h>
-#include <stdio.h>
+#include <stdlib.h>
 #include "config.h"
 
 /* This function doesn't exist on Solaris 10u9 */
@@ -353,11 +353,20 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	case FIELD_TYPE_BLOB:
 	case FIELD_TYPE_DATE:
 	case FIELD_TYPE_TIME:
-	case FIELD_TYPE_DATETIME:
-	case FIELD_TYPE_TIMESTAMP:
 	case FIELD_TYPE_YEAR:
 	  value_str = strndup(row[f],les[f]);
 	  value = scm_from_locale_string(value_str);
+	  break;
+	case FIELD_TYPE_DATETIME:
+	case FIELD_TYPE_TIMESTAMP:
+	  /* (car (mktime (car (strptime "%Y-%m-%d %H:%M:%S" "2013-03-20 23:05:44"))))
+	     scm_mktime needs to use the default time zone because MySQL stores times in UTC.  */
+	  value_str = strndup(row[f],les[f]);
+	  value = scm_from_locale_string(value_str);
+	  value = scm_strptime(scm_from_locale_string("%Y-%m-%d %H:%M:%S"),value);
+	  value = SCM_CAR(value);
+	  value = scm_mktime(value,scm_from_locale_string("GMT+0"));
+	  value = SCM_CAR(value);
 	  break;
 	default:
 	  /* todo: error msg to be translated */
