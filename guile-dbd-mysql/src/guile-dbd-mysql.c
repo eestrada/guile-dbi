@@ -84,7 +84,6 @@ __mysql_make_g_db_handle(gdbi_db_handle_t* dbh)
     {
       int ret = 0;
       int port = 0;
-      dbh->db_info = (MYSQL*) mysql_init(NULL);
       char* user = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(0)));
       char* pass = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(1)));
       char* db   = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(2)));
