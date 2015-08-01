@@ -1,7 +1,7 @@
 # configure.ac - Configure script for the guile-dbd-sqlite3.
 # Copyright (C) 2004, 2005 Free Software Foundation, Inc.
 # Written by Maurizio Boriani <baux@member.fsf.org>
-# Edited by Julian Kalbhenn <jkal@gmx.net>
+# Edited by (jkal@posteo.eu, https://github.com/jkalbhenn)
 #
 # This file is part of the guile-dbd-sqlite3.
 #
@@ -44,7 +44,7 @@ AC_CHECK_TOOL([AR], [ar], :)
 AC_CHECK_TOOL([NM], [nm], :)
 AC_PATH_PROG([GUILECONFIG], [guile-config], :)
 
-# wtf ... why is this not expanding ??? 
+# wtf ... why is this not expanding ???
 # PKG_PROG_PKG_CONFIG
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -95,4 +95,3 @@ $PACKAGE-$VERSION
    compiler:    ${CC} ${CPPFLAGS} ${CFLAGS}
    link:        ${LIBS}
 "
-
