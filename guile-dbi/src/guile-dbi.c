@@ -336,6 +336,7 @@ __gdbi_dbd_wrap(gdbi_db_handle_t* dbh, const char* function_name,
 
   /* I assume this is correct for all OS'es */
   snprintf(func, func_len, "__%s_%s", dbh->bcknd_str, function_name);
+  dlerror();    /* Clear any existing error -- Solaris needs this */
   *function_pointer = dlsym(dbh->handle, func);
   if ((ret = dlerror()) != NULL)
     {

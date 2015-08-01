@@ -3,6 +3,7 @@ Version 2.1.6: (2015-08-01):
 	* src/test/Makefile.am (libguile_dbd_test_la_LIBADD): Remove '-lz'.
 	* configure.ac: New option '--with-guile-site-dir' to set 'guilesitedir'.
 	* src/dbi/Makefile.am (guiledbidatadir): Use "$(guilesitedir)/dbi".
+	* Clear prior dlsym errors before they propagate into guile-dbi.
 
 Version 2.1.5: (2013-04-11):
 	* Cleaned up README, TODO files.
