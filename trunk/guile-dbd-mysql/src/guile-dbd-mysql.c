@@ -345,6 +345,7 @@ __mysql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
 	  break;
 	case FIELD_TYPE_FLOAT:
 	case FIELD_TYPE_DOUBLE: 
+	case FIELD_TYPE_NEWDECIMAL:
 	  value_str = strndup(row[f],les[f]);
 	  value = scm_from_double(atof(value_str));
 	  break;
