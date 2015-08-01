@@ -294,7 +294,11 @@ init_db_handle_type(void)
 {
   g_db_handle_tag = scm_make_smob_type("g_db_handle",
                                        sizeof(gdbi_db_handle_t));
+/* guile-2.0 and newer should not do this.
+   See http://lists.gnu.org/archive/html/guile-user/2011-11/msg00074.html */
+#if 0 
   scm_set_smob_mark (g_db_handle_tag, mark_db_handle);
+#endif
   scm_set_smob_free (g_db_handle_tag, free_db_handle);
   scm_set_smob_print (g_db_handle_tag, print_db_handle);
 }
