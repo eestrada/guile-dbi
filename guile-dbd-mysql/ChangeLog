@@ -1,6 +1,7 @@
 Version 2.1.6 (2015-08-01):
 	* Build and run on Solaris 10, which doesn't have strndup.
 	* Support for BLOB, DATE, TIME, YEAR, DATETIME, and TIMESTAMP types.
+	* Fix support for LONGLONG type.
 
 Version 2.1.4 (2010-05-21):
 	* Use guile-config to get library, include-file locations.
