@@ -14,7 +14,7 @@ and Linas Vepstas <linasvepstas@gmail.org>
  The system is split into two parts: the DBI (database independent) part,
  which provides the scheme interfaces, and the DBD (database dependent)
  plugins, which connect to the actual SQL server. Currently, there are
- DBD backends for Postgres on MySQL.
+ DBD backends for PostgreSQL, MySQL and SQLite3.
 
  Please send patches and bug reports to guile-user@gnu.org, and be sure
  to copy Linas Vepstas <linasvepstas@gmail.com>. Alternately, they may
