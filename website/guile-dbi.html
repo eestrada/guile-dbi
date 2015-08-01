@@ -47,8 +47,8 @@ ul.toc {list-style: none}
 It describes how to use Guile DBI and how to write new dbd database 
 drivers.
 </p>
-<p>This Info file contains edition 2.1.4 of the reference
-manual, corresponding to Guile DBI version 2.1.4.
+<p>This Info file contains edition 2.1.6 of the reference
+manual, corresponding to Guile DBI version 2.1.6.
 </p>
 
 
@@ -139,9 +139,9 @@ Currently, these are MySQL, Postgres and SQLite.
 
 </pre></td></tr></table>
 
-<p>Here's another example, using the MySQL database. This example assumes
-that the MySQL server is running, and that a table named &quot;pippo&quot; has 
-already been created and populated with data:
+<p>Here's another example, using the MySQL database. This example
+assumes that the MySQL server is running, and that a table named
+&quot;pippo&quot; has already been created and populated with data:
 </p>
 <table><tr><td>&nbsp;</td><td><pre class="example">#!/usr/bin/guile -e main -s
 !#
@@ -167,6 +167,18 @@ already been created and populated with data:
 
 ))
 </pre></td></tr></table>
+
+Login credentials for PostgreSQL work similarly:
+<table><tr><td>&nbsp;</td><td><pre class="example">#!/usr/bin/guile -e main -s
+!#
+
+(use-modules (dbi dbi))
+
+(define conxion (dbi-open &quot;postgresql&quot; &quot;user:pass:pluto:tcp:localhost:5432&quot;))
+(define ret #f)
+(define conxion (dbi-open &quot;postgresql&quot; &quot;user:pass:pluto:socket:/var/run/postgresql&quot;))
+</pre></td></tr></table>
+
 
 
 <hr size="6">
