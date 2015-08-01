@@ -1,3 +1,4 @@
+Version 2.1.6 (2015-08-01):
 
 Version 2.1.4 (2010-05-21):
 	* Use guile-config to get library, include-file locations.
@@ -28,7 +29,7 @@ Version 2.1.3: 2009-12-06:
 	* DBD-VERSION: Bump up version.
 	* README: Add connection string format explanation.
 	* Implement automatic reconnection after a db server failure
-	  (ex. broken socket, network down etc...). The number 
+	  (ex. broken socket, network down etc...). The number
 	  of reconnection attempt is set by an optional parameter
 	  in the connection string, if omitted no attempt is done.
 	* Add connection string format in the README file.
@@ -86,4 +87,3 @@ Version 2.1.3: 2009-12-06:
 	* README: New, void.
 	* configure.ac: New. Main autoconf stuff.
 	* Makefile.am: New. Maim automake makefile.
-
