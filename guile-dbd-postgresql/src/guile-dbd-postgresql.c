@@ -363,6 +363,11 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
           value = scm_from_double(atof(vstr));
         }
+      else if (type == 1016 ) /* _int8  -- list if integers */
+        {
+          const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
+          value = scm_from_locale_string(vstr);
+        }
       else if (type == 18 ||  /* char */
                type == 19 ||  /* name */
                type == 25 ||  /* text */
@@ -375,7 +380,8 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
       else
         {
           char msg[101];
-          snprintf(msg, 100, "unknown field type %d", type);
+          snprintf(msg, 100, "unknown field type %d for %s", type,
+                   PQfname(pgsqlP->res, f));
           dbh->status = scm_cons(scm_from_int(1),
                  scm_from_utf8_string(msg));
           pgsqlP->lget++;
