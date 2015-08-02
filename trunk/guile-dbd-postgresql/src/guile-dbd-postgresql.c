@@ -345,6 +345,10 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
   for (f = 0; f<fnum; f++)
     {
       SCM value;
+
+      /* The different field types can be gotten by saying
+       * SELECT typname, oid from pg_type;
+       * They do not seem to be listed in any header files... */
       Oid type = PQftype(pgsqlP->res, f);
       if ((type >= 20 && type <= 24) ||
           type == 1700               ||
@@ -353,25 +357,27 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget,f);
           value = scm_from_long(atoi(vstr));
         }
-      else if (type == 700 ||
-          type == 701            )
+      else if (type == 700 || /* float4 */
+               type == 701 )  /* float8 */
         {
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
           value = scm_from_double(atof(vstr));
         }
-      else if (type == 18 ||
-               type == 19 ||
-               type == 25 ||
-               type == 702 ||
-               (type >= 1042 && type <= 1114))
+      else if (type == 18 ||  /* char */
+               type == 19 ||  /* name */
+               type == 25 ||  /* text */
+               type == 702 || /* abstime !!! XXX */
+               (type >= 1042 && type <= 1114)) /* varchar, timestamps */
         {
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
           value = scm_from_locale_string(vstr);
         }
       else
         {
+          char msg[101];
+          snprintf(msg, 100, "unknown field type %d", type);
           dbh->status = scm_cons(scm_from_int(1),
-                 scm_from_utf8_string("unknown field type"));
+                 scm_from_utf8_string(msg));
           pgsqlP->lget++;
           return SCM_EOL;
         }
