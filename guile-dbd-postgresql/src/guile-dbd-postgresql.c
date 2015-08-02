@@ -363,10 +363,24 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
           value = scm_from_double(atof(vstr));
         }
-      else if (type == 1016 ) /* _int8  -- list if integers */
+      else if (type == 1005 || /* _int2  -- list of integers */
+               type == 1007 || /* _int4  -- list of integers */
+               type == 1016 )  /* _int8  -- list of integers */
         {
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
-          value = scm_from_locale_string(vstr);
+          char * p = strdup(vstr + 1);
+          char * tok = rindex(p, ',');
+          value = SCM_EOL;
+          while (tok)
+            {
+              SCM vtok = scm_from_long(atoi(tok + 1));
+              value = scm_cons(vtok, value);
+              *tok = 0x0;
+              tok = rindex(p, ',');
+            }
+          SCM vtok = scm_from_long(atoi(p));
+          value = scm_cons(vtok, value);
+          free(p);
         }
       else if (type == 18 ||  /* char */
                type == 19 ||  /* name */
