@@ -97,7 +97,7 @@ __postgresql_make_g_db_handle(gdbi_db_handle_t* dbh)
             {
               char* sretn  = scm_to_locale_string(scm_list_ref(cp_list,scm_from_int(6)));
               pgsqlP->retn = atoi(sretn);
-         free (sretn);
+              free (sretn);
             }
         }
       else
@@ -350,12 +350,12 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
        * SELECT typname, oid from pg_type;
        * They do not seem to be listed in any header files... */
       Oid type = PQftype(pgsqlP->res, f);
-      if ((type >= 20 && type <= 24) ||
-          type == 1700               ||
-          type == 26                  )
+      if ((type >= 20 && type <= 24) || /* int2, int4, int8 */
+          type == 1700               || /* numeric */
+          type == 26                  ) /* oid */
         {
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget,f);
-          value = scm_from_long(atoi(vstr));
+          value = scm_from_long_long(atoll(vstr));
         }
       else if (type == 700 || /* float4 */
                type == 701 )  /* float8 */
@@ -373,12 +373,12 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
           value = SCM_EOL;
           while (tok)
             {
-              SCM vtok = scm_from_long(atoi(tok + 1));
+              SCM vtok = scm_from_long_long(atoll(tok + 1));
               value = scm_cons(vtok, value);
               *tok = 0x0;
               tok = rindex(p, ',');
             }
-          SCM vtok = scm_from_long(atoi(p));
+          SCM vtok = scm_from_long_long(atoll(p));
           value = scm_cons(vtok, value);
           free(p);
         }
