@@ -241,11 +241,19 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
 
   pgsqlP = (gdbi_pgsql_ds_t*)dbh->db_info;
 
+  /* read up all results before next query */
+
+  do
+    {
   if (pgsqlP->res)
     {
       PQclear(pgsqlP->res);
       pgsqlP->res = NULL;
     }
+      else
+        break;
+    }
+  while ((pgsqlP->res = PQgetResult(pgsqlP->pgsql)) != NULL); 
 
 #if 0
   if (PQresultStatus(pgsqlP->res) == PGRES_FATAL_ERROR)
@@ -351,13 +359,13 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
        * They do not seem to be listed in any header files... */
       Oid type = PQftype(pgsqlP->res, f);
       if ((type >= 20 && type <= 24) || /* int2, int4, int8 */
-          type == 1700               || /* numeric */
           type == 26                  ) /* oid */
         {
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget,f);
           value = scm_from_long_long(atoll(vstr));
         }
       else if (type == 700 || /* float4 */
+               type == 1700 || /* numeric */
                type == 701 )  /* float8 */
         {
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
