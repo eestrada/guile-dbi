@@ -245,13 +245,11 @@ __postgresql_query_g_db_handle(gdbi_db_handle_t* dbh, char* query)
 
   do
     {
-  if (pgsqlP->res)
-    {
-      PQclear(pgsqlP->res);
-      pgsqlP->res = NULL;
-    }
-      else
-        break;
+      if (pgsqlP->res)
+        {
+          PQclear(pgsqlP->res);
+          pgsqlP->res = NULL;
+        }
     }
   while ((pgsqlP->res = PQgetResult(pgsqlP->pgsql)) != NULL); 
 
