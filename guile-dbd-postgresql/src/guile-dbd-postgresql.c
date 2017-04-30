@@ -367,7 +367,14 @@ __postgresql_getrow_g_db_handle(gdbi_db_handle_t* dbh)
                type == 701 )  /* float8 */
         {
           const char * vstr = PQgetvalue(pgsqlP->res, pgsqlP->lget, f);
-          value = scm_from_double(atof(vstr));
+          if (vstr && *vstr)
+            { 
+              value = scm_c_locale_stringn_to_number(vstr, strlen(vstr), 10);
+            }
+          else
+            {
+              value = scm_from_double(0.0);
+            }
         }
       else if (type == 1005 || /* _int2  -- list of integers */
                type == 1007 || /* _int4  -- list of integers */
