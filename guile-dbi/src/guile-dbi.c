@@ -25,6 +25,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
 static scm_t_bits g_db_handle_tag;
@@ -306,6 +307,7 @@ init_dbi(void)
   is_inited = 1;
   init_db_handle_type();
   lt_dlinit();
+  lt_dlsetsearchpath(getenv("GUILE_DBD_PATH"));
 
 #ifndef SCM_MAGIC_SNARFER
 #include "guile-dbi.x"

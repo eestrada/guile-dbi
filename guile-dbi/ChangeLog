@@ -4,6 +4,7 @@ Version 2.1.7: (XXX)
 	* Makefile.am (SUBDIRS): Add libltdl.
 	* configure.ac: Use LTDL_INIT.  Add LTDLINCL and LIBLTDL to flags.
 	* src/Makefile.am (libguile_dbi_la_LIBDD): Remove '-ldl'.
+	* src/guile-dbi.c (init_dbi): Call 'lt_dlsetsearchpath'.
 
 Version 2.1.6: (2015-08-01):
 	* src/Makefile.am (libguile_dbi_la_LIBADD): Remove '-lz'.
