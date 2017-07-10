@@ -1,8 +1,9 @@
 Version 2.1.6 (2015-08-01):
-	* Add support for lists of integers
+	* Add support for lists of integers.
+	* Fix support for int8 integers.
 
 Version 2.1.4 (2010-05-21):
-	* Use guile-config to find library, include file locations
+	* Use guile-config to find library, include file locations.
 
 Version 2.1.3  (2009-12-06):
 	* Update libtool configuration.
