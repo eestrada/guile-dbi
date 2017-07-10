@@ -1,8 +1,8 @@
 Guile DBI
 =========
 
-**guile-dbi** provides a simple, generic, easy-to-use scheme/guile
-interface to SQL databases, such as Postgres, MySQL or SQLite.
+**guile-dbi** provides a simple, generic, easy-to-use **guile scheme**
+interface to SQL databases, such as Postgres, MySQL or SQLite3.
 
 The system is 'generic' in the sense that the same programming interface
 (front end) can be used with different databases. The DBI (database
