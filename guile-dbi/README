@@ -59,9 +59,9 @@ and Linas Vepstas <linasvepstas@gmail.org>
    The doc directory contains the reference manual  and some examples.
 
    The www pages are at http://www.gnu.org/software/guile-dbi or
-   http://home.gna.org/guile-dbi/
+   http://htmlpreview.github.com/?https://github.com/opencog/guile-dbi/blob/master/website/index.html
 
-   The project page is at: http://www.gna.org/projects/guile-dbi.
+   The project page is at: https://github.com/opencog/guile-dbi
 
 * Verifying
 
