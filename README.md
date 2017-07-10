@@ -22,6 +22,11 @@ special treatment for dates, currencies, etc. At this time, there is no
 support for prepared statements. Capable programmers are invited to add
 support for this and other missing features.
 
+Someone clever might wnt to figure out how to replace the C code by
+generic FFI interfaces, so that there would not be any need at all for
+any C code. However, that takes more work, and the code here works OK,
+so, for now, things seem OK.
+
 Documentation
 -------------
 The guile-dbi user-manual and reference is
