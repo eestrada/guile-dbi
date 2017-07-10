@@ -9,4 +9,12 @@ Please see the [old guile-dbi page](http://htmlpreview.github.com/?https://githu
 
 http://htmlpreview.github.com/?https://github.com/opencog/guile-dbi/tree/master/website
 
+http://htmlpreview.github.com/?https://github.com/opencog/guile-dbi/blob/master/website
+
+http://htmlpreview.github.com/?https://github.com/opencog/guile-dbi/blob/master/website/index.html
+
+http://rawgit.com/opencog/guile-dbi/master/website
+
+http://rawgit.com/opencog/guile-dbi/master/website/index.html
+
 Also see the info docs in the [guile-dbi/docs](guile/docs) directory.
