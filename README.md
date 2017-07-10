@@ -1,7 +1,7 @@
 Guile DBI
 =========
 
-guile-dbi provides a simple, generic, easy-to-use scheme/guile
+**guile-dbi** provides a simple, generic, easy-to-use scheme/guile
 interface to SQL databases, such as Postgres, MySQL or SQLite.
 
 The system is 'generic' in the sense that the same programming interface
@@ -33,6 +33,46 @@ A copy of the old, defunct website is
 Mailing List
 ------------
 All discussion of guile-dbi should be directed to: guile-user@gnu.org.
+
+Bulding and Installing
+----------------------
+Currently, the source code is organized into four distinct projects:
+The main database-independent code in DBI, and three different DBD
+drivers.  You have to build each independently.  You will need to do
+something like this:
+
+```
+apt-get install autoconf automake
+```
+or maybe
+```
+yum install autoconf automake
+```
+Then:
+```
+cd guile-dbi
+./autogen.sh --no-configure
+mkdir build
+cd build
+./configure
+make
+sudo make install
+```
+Then
+```
+cd guile-dbd-[mysql, postgresql, sqlite3]
+./autogen.sh --no-configure
+mkdir build
+cd build
+./configure
+make
+sudo make install
+```
+
+After doing this, the tutorial in
+[the user manual](http://htmlpreview.github.com/?https://github.com/opencog/guile-dbi/blob/master/website/guile-dbi.html)
+should work fine.
+
 
 License
 -------
